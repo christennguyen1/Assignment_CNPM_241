@@ -1,0 +1,26 @@
+# The node_modules directory contains all the libraries installed via npm
+node_modules/
+
+# The .env file contains sensitive environment variables and should not be included in version control
+.env
+
+# If you use build tools or development tools like Webpack, you might want to exclude build or dist directories
+dist/
+build/
+
+# Log files that may be generated during development or when the application runs
+*.log
+
+# System or IDE-specific files that may be created
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+.idea/
+.vscode/
+
+# Configuration files for GitHub Actions or CI/CD
+*.yml
+*.yaml
+
+# Other files or directories you want to ignore
+dump.rdb

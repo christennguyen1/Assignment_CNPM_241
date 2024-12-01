@@ -1,0 +1,170 @@
+### Get all data temperature and humidity
+# GET http://10.28.129.153:5000/api/data
+GET https://do-an-ktmt-backend.onrender.com/api/data
+
+
+### Get data temperature and humidity latest
+GET http://10.28.129.153:5000/api/data/sensors/latest
+
+
+### Get data according sensors (humidity or temperature)
+GET https://do-an-ktmt-backend.onrender.com/api/data/sensors?variable=humidity
+
+
+### Get data according sensors and timestamps (humidity or temperature)
+GET https://do-an-ktmt-backend.onrender.com/api/data/sensorToTime?variable=temperature&start_date=2024-09-01&end_date=2024-09-30
+
+
+### Login
+POST http://127.0.0.1:3001/user/login
+Content-Type: application/json
+
+{
+    "email": "trungnguyen@hcmut.edu.vn",
+    "password": "12345634"
+}
+
+### Error Register users role student email is not fomat University
+POST http://127.0.0.1:3001/user/register
+Content-Type: application/json
+
+{
+    "email": "vinhnguyen@hcmut.edu.",
+    "password": "12345634",
+    "mssv": "2015063",
+    "faculty": "Computer",
+    "fname": "Vinh Nguyen",
+    "phone": "12345652",
+    "role": "student"
+}
+
+
+### Register information user that exists.
+POST http://127.0.0.1:3001/user/register
+Content-Type: application/json
+
+{
+    "email": "vinhnguyen@hcmut.edu.vn",
+    "password": "12345634",
+    "mssv": "2015063",
+    "faculty": "Computer",
+    "fname": "Vinh Nguyen",
+    "phone": "12345652",
+    "role": "student"
+}
+
+
+### Register users role student
+POST http://127.0.0.1:3001/user/register
+Content-Type: application/json
+
+{
+    "email": "vinhnguyen@hcmut.edu.vn",
+    "password": "12345634",
+    "mssv": "2015063",
+    "faculty": "Computer",
+    "fname": "Vinh Nguyen",
+    "phone": "12345652",
+    "role": "student"
+}
+
+
+### Register users role admin
+POST https://do-an-ktmt-backend.onrender.com/api/admin/register
+Content-Type: application/json
+
+{
+    "name": "a",
+    "password": "1",
+    "email": "a",
+    "phoneNumber": "037466892",
+    "address": "Road A block B",
+    "role": "admin"
+}
+
+
+### Login users
+# POST http://127.0.0.1:5000/api/users/login
+POST http://10.28.128.126:8080/api/users/login
+Content-Type: application/json
+
+{
+    "email": "trungnguyen@gmail.com",
+    "password": "12345678"
+}
+
+
+### Update password users
+POST http://127.0.0.1:5000/api/users/updatePassword
+Content-Type: application/json
+
+{
+    "email": "trungnguyen@gmail.com",
+    "password": "12345678"
+}
+
+
+### Update password users
+POST http://127.0.0.1:5000/api/users/update
+Content-Type: application/json
+
+{
+    "email": "trungnguyen@gmail.com",
+    "name": "Trung Nguyen Thanh",
+    "phoneNumber": "01234567",
+    "address": "Road N, Block K"
+}
+
+
+### Delete users
+POST http://127.0.0.1:5000/api/users/delete
+Content-Type: application/json
+
+{
+    "email": "trungnguyen@gmail.com"
+}
+
+
+### Get all data relay
+GET http://10.28.129.153:5000/api/data/relay/all
+
+
+### Get data relay detail
+GET http://10.28.128.126:8080/api/data/relay?variable=nutnhan3
+
+
+### Update relay
+PATCH  http://10.28.128.126:8080/api/data/relay/update
+Content-Type: application/json
+
+{
+    "relayName": "nutnhan2",
+    "status": "OFF"
+}
+
+
+### Create relay
+POST http://10.28.128.126:8080/api/data/relay/create
+Content-Type: application/json
+
+{
+    "relayName": "nutnhan1",
+    "status": "ON"
+}
+
+
+### Get history relay
+GET http://10.28.128.126:8080/api/data/relay_history
+Content-Type: application/json
+
+
+
+
+### Delete relay
+POST https://do-an-ktmt-backend.onrender.com/api/data/relay/delete
+Content-Type: application/json
+
+{
+    "relayName": "nutnhan1"
+}
+
