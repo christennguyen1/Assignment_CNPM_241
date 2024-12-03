@@ -1,9 +1,13 @@
+// middlewares/auth.js
 const JWT = require('jsonwebtoken');
 const accessTokenSecret = process.env.accessTokenSecret;
 
 const authenticateToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
+
+    console.log(authHeader);
+    
 
     if (token == null) {
         return res.status(401).json({ error: 'Token not provided' });

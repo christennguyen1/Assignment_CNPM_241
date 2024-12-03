@@ -31,42 +31,88 @@ const loginService = async (email, password) => {
 
 
 const registerService = async (data) => {
-    const { email, password, mssv, faculty, fname, phone } = data; // Đảm bảo data được truyền vào hàm
+    // const { email, password, faculty, fname, phone } = data; // Đảm bảo data được truyền vào hàm
 
     // Kiểm tra các trường bắt buộc
-    if (!mssv || !email || !password || !faculty || !fname || !phone) {
-        return { error: 'MSSV, email, password, full name, phone number, and faculty are required.' };
+    console.log(data.role);
+
+    let email = data.email;
+    
+    if (data.role == 'student'){
+        if (!data.email || !data.password || !data.faculty || !data.fname || !data.phone || !data.mssv) {
+            return { error: 'mssv, email, password, full name, phone number, bank_account and faculty are required.' };
+        }
+
+        let mssv = data.mssv;
+
+        const existingUserMSSV = await modelUser.findOne({ $or: [{ mssv }] });
+        if (existingUserMSSV) {
+            return { error: 'Email already exists.' };
+        }
+    }
+
+    else if (data.role == 'admin'){
+        if (!data.email || !data.password || !data.faculty || !data.fname || !data.phone) {
+            return { error: 'email, password, full name, phone number, bank_account and faculty are required.' };
+        }
     }
 
     // Kiểm tra email có phải là email hợp lệ của trường đại học không
-    if (!isEmail(email)) {
+    if (!isEmail(data.email)) {
         return { error: 'Email is not belong to university' };
     }
 
     // Kiểm tra nếu email đã tồn tại
-    const existingUser = await modelUser.findOne({ $or: [{ email }] });
-    if (existingUser) {
+    const existingUserEmail = await modelUser.findOne({ $or: [{ email }] });
+    if (existingUserEmail) {
         return { error: 'Email already exists.' };
     }
 
+
     // Mã hóa mật khẩu
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(data.password, 10);
 
-    // Tạo người dùng mới
-    const newUser = new modelUser({
-        email,
+    let newUser = {
+        email: data.email,
         password: hashedPassword,
-        role: 'student',
-        faculty,
-        full_name: fname,
-        phone_number: phone,
-        mssv
-    });
+        role: data.role,
+        faculty: data.faculty,
+        full_name: data.fname,
+        phone_number: data.phone
+    };
+    
+    if (data.role === 'student') {
+        newUser.mssv = data.mssv; 
+    }
+    
 
-    // Lưu vào cơ sở dữ liệu
-    const result = await newUser.save();
+    const userInstance = new modelUser(newUser);
+
+    const result = await userInstance.save();
 
     return { message: 'User registered successfully', data: result };
 };
 
-module.exports = { loginService, registerService };
+
+const AddBankAccountService = async (data) => {
+    // const { email, password, faculty, fname, phone } = data; // Đảm bảo data được truyền vào hàm
+
+    const { email, bank_account } = data;
+    
+    if (!email || !bank_account) {
+        return { error: 'email, bank account are required.' };
+    }
+
+    // Kiểm tra nếu email đã tồn tại
+    const existingUserEmail = await modelUser.findOne({ $or: [{ email }] });
+    if (!existingUserEmail) {
+        return { error: 'Email was not register.' };
+    }
+
+    existingUserEmail.bank_account = bank_account;
+    const result = await existingUserEmail.save(); // Lưu lại thông tin sau khi cập nhật
+    
+    return { message: 'User registered successfully', data: result };
+};
+
+module.exports = { loginService, registerService, AddBankAccountService };

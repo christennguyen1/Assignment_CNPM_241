@@ -6,28 +6,34 @@ const orderSchema = new mongoose.Schema({
         type: Date,
         required: true
     },
-    location: {
+    name_file: {
         type: String,
         required: true
     },
-    size: {
+    num_page: {
         type: String,
         required: true
     },
-    nb_papers:{
+    face_page:{
         type: Number,
         required: true
     },
-    face:{
+    color_print:{
+        type: Number,
+        required: true,
+        enum: ['yes','no'],
+        default: 'no'
+    },
+    status_proposal:{
         type: Number,
         required: true
     },
-    printer:{
+    printer_id:{
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'printer',
         required: true
     },
-    user:{
+    user_email:{
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'user',
         required: true

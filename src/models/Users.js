@@ -25,17 +25,23 @@ const Users = new Schema({
     phone_number: {
         type: String,
         required: true,
-        unique: true,
     },
     mssv: {
         type: String,
-        required: true,
+        unique: true,
     },
-    paper_credit: {
-        type: String,
+    bank_account: {
+        type: String
+    },
+    number_account: {
+        type: Number
+    },
+    number_page: {
+        type: Number
     },
     faculty: {
         type: String,
+        required: true,
     },
     accessToken: {
         type: String,

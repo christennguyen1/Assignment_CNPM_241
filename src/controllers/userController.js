@@ -1,9 +1,9 @@
-const { loginService, registerService } = require('../services/userService');
+const { loginService, registerService, AddBankAccountService } = require('../services/userService');
 const bcrypt = require('bcrypt');
 //Model
 const modelUser = require('../models/Users');
 
-const login = async (req, res) => {
+const loginController = async (req, res) => {
     try {
         const { email, password } = req.body;
         const data = await loginService(email, password);
@@ -26,7 +26,7 @@ const login = async (req, res) => {
 };
 
 
-const register = async (req, res) => {
+const registerController = async (req, res) => {
     try {
         const data = req.body;
         const result = await registerService(data);
@@ -43,6 +43,28 @@ const register = async (req, res) => {
         console.error('Error registering user:', error);
         return res.status(500).json({
             message: 'Error registering user. Please try again later.',
+        });
+    }
+};
+
+
+const AddBankAccountController = async (req, res) => {
+    try {
+        const data = req.body;
+        const result = await AddBankAccountService(data);
+
+        if (result.error) {
+            return res.status(400).json({ error: result.error });
+        }
+
+        return res.status(200).json({
+            message: result.message,
+            data: result.data
+        });
+    } catch (error) {
+        console.error('Error add bank account:', error);
+        return res.status(500).json({
+            message: 'Error add bank account. Please try again later.',
         });
     }
 };
@@ -68,6 +90,7 @@ const logout = async (req, res) => {
     }
 }
 
+
 const get_profile = async (req, res) => {
     try {
         const userId = req.user.id;
@@ -88,6 +111,7 @@ const get_profile = async (req, res) => {
         });
     }
 }
+
 
 const edit_profile = async (req, res, next) => {
     try {
@@ -232,4 +256,4 @@ const forgot_password = async (req, res) => {
 }
 
 
-module.exports = { login, register, logout, get_profile, edit_profile, change_password, forgot_password };
+module.exports = { loginController, registerController, AddBankAccountController, logout, get_profile, edit_profile, change_password, forgot_password };
