@@ -112,7 +112,37 @@ const AddBankAccountService = async (data) => {
     existingUserEmail.bank_account = bank_account;
     const result = await existingUserEmail.save(); // Lưu lại thông tin sau khi cập nhật
     
-    return { message: 'User registered successfully', data: result };
+    return { message: 'User update bank account successfully', data: result };
 };
 
-module.exports = { loginService, registerService, AddBankAccountService };
+const AddPageService = async (data) => {
+    // const { email, password, faculty, fname, phone } = data; // Đảm bảo data được truyền vào hàm
+    console.log(data);
+    
+
+    const { email_admin, number_page, email_user } = data;
+    
+    if (!email_admin || !number_page || !email_user) {
+        return { error: 'email, bank account, email_user are required.' };
+    }
+
+    // Kiểm tra nếu email đã tồn tại
+    const existingUserEmailAdmin = await modelUser.findOne({ $or: [{ email: email_admin }] });
+    const existingUserEmailUser = await modelUser.findOne({ $or: [{ email: email_user }] });
+    if (!existingUserEmailAdmin || !existingUserEmailUser) {
+        return { error: 'Email was not register.' };
+    }
+    console.log(existingUserEmailAdmin);
+    
+
+    if (existingUserEmailAdmin.role != 'admin'){
+        return { error: 'User has not permission.' };
+    }
+
+    existingUserEmailUser.number_page = number_page;
+    const result = await existingUserEmailUser.save(); // Lưu lại thông tin sau khi cập nhật
+    
+    return { message: 'User update page successfully', data: result };
+};
+
+module.exports = { loginService, registerService, AddBankAccountService, AddPageService };

@@ -16,5 +16,6 @@ UserRouter.get('/verify-token', authenticateToken, (req, res) => {
 UserRouter.post('/refresh-token', refreshToken);
 UserRouter.post('/addBankAccount', Usercontroller.AddBankAccountController);
 UserRouter.post('/addBankAccount', Usercontroller.AddBankAccountController);
+UserRouter.post('/addPage', Usercontroller.AddPageController);
 
 module.exports = UserRouter;

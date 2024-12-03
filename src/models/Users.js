@@ -39,6 +39,9 @@ const Users = new Schema({
     number_page: {
         type: Number
     },
+    number_page_use: {
+        type: Number
+    },
     faculty: {
         type: String,
         required: true,

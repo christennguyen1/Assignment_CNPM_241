@@ -104,6 +104,15 @@ authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NGYyNTAwO
 }
 
 
+### Add page account
+POST http://127.0.0.1:3001/user/addPage
+Content-Type: application/json
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NGYyNTE5OTU2MGQzNjRiZDI5NjNlZCIsImlhdCI6MTczMzI1MjEwMiwiZXhwIjoxNzMzMjU1NzAyfQ.PTpsJCpUX0p4CMXee4aQCrIxkuQ1Qj0Lmio7SoQDNFY
 
+{
+    "email_admin": "longnguyen@hcmut.edu.vn",
+    "number_page": "12",
+    "email_user": "vinhnguyen@hcmut.edu.vn"
+}
 
 

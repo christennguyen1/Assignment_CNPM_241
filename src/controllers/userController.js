@@ -1,4 +1,4 @@
-const { loginService, registerService, AddBankAccountService } = require('../services/userService');
+const { loginService, registerService, AddBankAccountService, AddPageService } = require('../services/userService');
 const bcrypt = require('bcrypt');
 //Model
 const modelUser = require('../models/Users');
@@ -52,6 +52,30 @@ const AddBankAccountController = async (req, res) => {
     try {
         const data = req.body;
         const result = await AddBankAccountService(data);
+
+        if (result.error) {
+            return res.status(400).json({ error: result.error });
+        }
+
+        return res.status(200).json({
+            message: result.message,
+            data: result.data
+        });
+    } catch (error) {
+        console.error('Error add bank account:', error);
+        return res.status(500).json({
+            message: 'Error add bank account. Please try again later.',
+        });
+    }
+};
+
+
+const AddPageController = async (req, res) => {
+    try {
+        const data = req.body;
+        console.log(data);
+        
+        const result = await AddPageService(data);
 
         if (result.error) {
             return res.status(400).json({ error: result.error });
@@ -256,4 +280,4 @@ const forgot_password = async (req, res) => {
 }
 
 
-module.exports = { loginController, registerController, AddBankAccountController, logout, get_profile, edit_profile, change_password, forgot_password };
+module.exports = { loginController, registerController, AddBankAccountController, AddPageController, logout, get_profile, edit_profile, change_password, forgot_password };
