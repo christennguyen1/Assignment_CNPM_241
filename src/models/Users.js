@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const orderSchema = require("./order.js").Schema
 
 const Users = new Schema({
     full_name: {
@@ -29,7 +30,6 @@ const Users = new Schema({
     },
     mssv: {
         type: String,
-        required: true,
     },
     paper_credit: {
         type: String,
@@ -37,11 +37,8 @@ const Users = new Schema({
     faculty: {
         type: String,
     },
-    accessToken: {
-        type: String,
-    },
-    refreshToken: {
-        type: String,
+    history: {
+        type: [orderSchema]
     },
 });
 

@@ -1,0 +1,80 @@
+### Register users role admin
+POST http://127.0.0.1:3000/user/register
+Content-Type: application/json
+
+{
+    "email": "badapple@gmail.com",
+    "password": "touhou",
+    "phone": "0225487",
+    "fname": "Marisa",
+    "faculty": "Computer",
+    "role": "admin"
+}
+
+### Login admin
+POST http://127.0.0.1:3000/user/login
+Content-Type: application/json
+
+
+{
+    "email": "badapple@gmail.com",
+    "password": "touhou"
+}
+
+### Add printer
+PUT http://127.0.0.1:3000/user/admin/add-printer
+Content-Type: application/json
+Authorization: token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NGVmYjRjNDdiY2U3YmU3MTFlNzIyYSIsImlhdCI6MTczMzIzMDQwOCwiZXhwIjoxNzMzMjM0MDA4fQ.7bPlGpGp2tzcghjVEdmVCQvMVs1iL4mUd646qe-fLbw
+
+
+{
+    "name": "Pruska MK4",
+    "type": "3D Printer",
+    "location": "H6",
+    "isActivated": "true",
+    "description": "For board game enthusiast!"
+}
+
+### Edit printer
+POST http://127.0.0.1:3000/user/admin/edit-printer/674f013db27b8765e0811f6c
+Content-Type: application/json
+Authorization: token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NGVmYjRjNDdiY2U3YmU3MTFlNzIyYSIsImlhdCI6MTczMzIzMDQwOCwiZXhwIjoxNzMzMjM0MDA4fQ.7bPlGpGp2tzcghjVEdmVCQvMVs1iL4mUd646qe-fLbw
+
+
+{
+    "isActivated": "false",
+    "description": "It's on fire!"
+}
+
+### Get printer details
+GET http://127.0.0.1:3000/user/admin/view-printer
+Content-Type: application/json
+Authorization: token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NGVmYjRjNDdiY2U3YmU3MTFlNzIyYSIsImlhdCI6MTczMzIzMDQwOCwiZXhwIjoxNzMzMjM0MDA4fQ.7bPlGpGp2tzcghjVEdmVCQvMVs1iL4mUd646qe-fLbw
+
+
+{
+    "email": "badapple@gmail.com",
+    "password": "touhou"
+}
+
+### Get report details
+GET http://127.0.0.1:3000/user/admin/view-report
+Content-Type: application/json
+Authorization: token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NGVmYjRjNDdiY2U3YmU3MTFlNzIyYSIsImlhdCI6MTczMzIzMDQwOCwiZXhwIjoxNzMzMjM0MDA4fQ.7bPlGpGp2tzcghjVEdmVCQvMVs1iL4mUd646qe-fLbw
+
+
+{
+    "email": "badapple@gmail.com",
+    "password": "touhou"
+}
+
+### Get order details
+GET http://127.0.0.1:3000/user/admin/view-order
+Content-Type: application/json
+Authorization: token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NGVmYjRjNDdiY2U3YmU3MTFlNzIyYSIsImlhdCI6MTczMzIzMDQwOCwiZXhwIjoxNzMzMjM0MDA4fQ.7bPlGpGp2tzcghjVEdmVCQvMVs1iL4mUd646qe-fLbw
+
+
+{
+    "email": "badapple@gmail.com",
+    "password": "touhou"
+}

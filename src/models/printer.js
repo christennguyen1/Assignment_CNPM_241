@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const orderSchema = require("./order").Schema
 const printerSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -17,6 +18,9 @@ const printerSchema = new mongoose.Schema({
     },
     description:{
         type: String,
+    },
+    order_queue: {
+        type: [orderSchema]
     }
 
 });

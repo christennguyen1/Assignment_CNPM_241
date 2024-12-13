@@ -1,9 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose = require("mongoose");
-const orderSchema = require("./order.model.js").Schema
+const order = require("./order.js").Schema
+
 const historySchema = new mongoose.Schema({
-    processed_date: {
+    last_updated: {
         type: Date,
         required: true
     },
@@ -13,8 +14,8 @@ const historySchema = new mongoose.Schema({
     process_msg: {
         type: String
     },
-    order: {
-        type: orderSchema 
+    order:{
+        type: order
     }
 });
 exports.default = mongoose.model('history', historySchema);

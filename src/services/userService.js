@@ -6,7 +6,7 @@ const modelUser = require('../models/Users');
 
 
 const loginService = async (email, password) => {
-    const user = await modelUser.findOne({ email }).select('+password').lean().exec();
+    const user = await modelUser.findOne({"email": email }).select('+password').lean().exec();
     if (!user) {
         return { error: 'Invalid username or password' }; // Trả về lỗi nếu không tìm thấy user
     }
@@ -18,8 +18,6 @@ const loginService = async (email, password) => {
 
     const accessToken = JWT.sign({ id: user._id }, process.env.accessTokenSecret, { expiresIn: '1h' });
     const refreshToken = JWT.sign({ id: user._id }, process.env.refreshTokenSecret, { expiresIn: '7d' });
-
-    await modelUser.updateOne({ _id: user._id }, { refreshToken });
 
     const { password: _, ...userProfile } = user; // Không trả về mật khẩu
     return {
@@ -34,13 +32,8 @@ const registerService = async (data) => {
     const { email, password, mssv, faculty, fname, phone } = data; // Đảm bảo data được truyền vào hàm
 
     // Kiểm tra các trường bắt buộc
-    if (!mssv || !email || !password || !faculty || !fname || !phone) {
-        return { error: 'MSSV, email, password, full name, phone number, and faculty are required.' };
-    }
-
-    // Kiểm tra email có phải là email hợp lệ của trường đại học không
-    if (!isEmail(email)) {
-        return { error: 'Email is not belong to university' };
+    if (!email || !password || !faculty || !fname || !phone) {
+        return { error: 'email, password, full name, phone number, and faculty are required.' };
     }
 
     // Kiểm tra nếu email đã tồn tại

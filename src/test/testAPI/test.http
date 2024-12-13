@@ -54,55 +54,106 @@ Content-Type: application/json
 }
 
 
-### Register users role student
-POST http://127.0.0.1:3001/user/register
-Content-Type: application/json
-
-{
-    "email": "vinhnguyen@hcmut.edu.vn",
-    "password": "12345634",
-    "mssv": "2015063",
-    "faculty": "Computer",
-    "fname": "Vinh Nguyen",
-    "phone": "12345652",
-    "role": "student"
-}
-
-
 ### Register users role admin
-POST https://do-an-ktmt-backend.onrender.com/api/admin/register
+POST http://127.0.0.1:3000/user/register
 Content-Type: application/json
 
 {
-    "name": "a",
-    "password": "1",
-    "email": "a",
-    "phoneNumber": "037466892",
-    "address": "Road A block B",
+    "email": "badapple@gmail.com",
+    "password": "touhou",
+    "phone": "0225487",
+    "fname": "Marisa",
+    "faculty": "Computer",
     "role": "admin"
 }
 
+### Login admin
+POST http://127.0.0.1:3000/user/login
+Content-Type: application/json
+
+
+{
+    "email": "badapple@gmail.com",
+    "password": "touhou"
+}
+
+### Add printer
+PUT http://127.0.0.1:3000/user/admin/add-printer
+Content-Type: application/json
+Authorization: token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NGVmYjRjNDdiY2U3YmU3MTFlNzIyYSIsImlhdCI6MTczMzIzMDQwOCwiZXhwIjoxNzMzMjM0MDA4fQ.7bPlGpGp2tzcghjVEdmVCQvMVs1iL4mUd646qe-fLbw
+
+
+{
+    "name": "Pruska MK4",
+    "type": "3D Printer",
+    "location": "H6",
+    "isActivated": "true",
+    "description": "For board game enthusiast!"
+}
+
+### Edit printer
+POST http://127.0.0.1:3000/user/admin/edit-printer/674f013db27b8765e0811f6c
+Content-Type: application/json
+Authorization: token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NGVmYjRjNDdiY2U3YmU3MTFlNzIyYSIsImlhdCI6MTczMzIzMDQwOCwiZXhwIjoxNzMzMjM0MDA4fQ.7bPlGpGp2tzcghjVEdmVCQvMVs1iL4mUd646qe-fLbw
+
+
+{
+    "isActivated": "false",
+    "description": "It's on fire!"
+}
+
+### Get printer details
+GET http://127.0.0.1:3000/user/admin/view-printer
+Content-Type: application/json
+Authorization: token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NGVmYjRjNDdiY2U3YmU3MTFlNzIyYSIsImlhdCI6MTczMzIzMDQwOCwiZXhwIjoxNzMzMjM0MDA4fQ.7bPlGpGp2tzcghjVEdmVCQvMVs1iL4mUd646qe-fLbw
+
+
+{
+    "email": "badapple@gmail.com",
+    "password": "touhou"
+}
+
+### Get report details
+GET http://127.0.0.1:3000/user/admin/view-report
+Content-Type: application/json
+Authorization: token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NGVmYjRjNDdiY2U3YmU3MTFlNzIyYSIsImlhdCI6MTczMzIzMDQwOCwiZXhwIjoxNzMzMjM0MDA4fQ.7bPlGpGp2tzcghjVEdmVCQvMVs1iL4mUd646qe-fLbw
+
+
+{
+    "email": "badapple@gmail.com",
+    "password": "touhou"
+}
+
+### Get order details
+GET http://127.0.0.1:3000/user/admin/view-order
+Content-Type: application/json
+Authorization: token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NGVmYjRjNDdiY2U3YmU3MTFlNzIyYSIsImlhdCI6MTczMzIzMDQwOCwiZXhwIjoxNzMzMjM0MDA4fQ.7bPlGpGp2tzcghjVEdmVCQvMVs1iL4mUd646qe-fLbw
+
+
+{
+    "email": "badapple@gmail.com",
+    "password": "touhou"
+}
 
 ### Login users
-# POST http://127.0.0.1:5000/api/users/login
-POST http://10.28.128.126:8080/api/users/login
+POST http://127.0.0.1:3000/user/login
 Content-Type: application/json
 
+
 {
-    "email": "trungnguyen@gmail.com",
-    "password": "12345678"
+    "email": "vinhnguyen@hcmut.edu.vn",
+    "password": "12345634"
 }
 
 
-### Update password users
-POST http://127.0.0.1:5000/api/users/updatePassword
+
+### Refresh token
+POST http://127.0.0.1:3000/user/refresh-token
 Content-Type: application/json
 
-{
-    "email": "trungnguyen@gmail.com",
-    "password": "12345678"
-}
-
+### Verify tokens
+GET http://127.0.0.1:3000/user/verify-token
+Content-Type: application/json
 
 ### Update password users
 POST http://127.0.0.1:5000/api/users/update
@@ -167,4 +218,3 @@ Content-Type: application/json
 {
     "relayName": "nutnhan1"
 }
-

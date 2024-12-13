@@ -1,13 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose = require("mongoose");
 const orderSchema = new mongoose.Schema({
     created_date: {
         type: Date,
-        required: true
-    },
-    location: {
-        type: String,
         required: true
     },
     size: {
@@ -33,4 +27,5 @@ const orderSchema = new mongoose.Schema({
         required: true
     }
 });
-exports.default = mongoose.model('order', orderSchema);
+const orderModel = mongoose.model('order', orderSchema);
+module.exports = {Schema: orderSchema, orderModel}

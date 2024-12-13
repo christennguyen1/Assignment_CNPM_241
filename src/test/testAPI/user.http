@@ -1,0 +1,63 @@
+### Register users role admin
+POST http://127.0.0.1:3000/user/register
+Content-Type: application/json
+
+{
+    "email": "goodapple@hcmut.edu.vn",
+    "password": "shrine",
+    "phone": "0185854",
+    "fname": "Reimu",
+    "faculty": "Computer",
+    "role": "student"
+}
+
+### Login users
+POST http://127.0.0.1:3000/user/login
+Content-Type: application/json
+
+
+{
+    "email": "goodapple@hcmut.edu.vn",
+    "password": "shrine"
+}
+
+### View printer
+GET http://127.0.0.1:3000/user/enduser/view-printer
+Content-Type: application/json
+Authorization: token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NGVmYjRjNDdiY2U3YmU3MTFlNzIyYSIsImlhdCI6MTczMzIzMDQwOCwiZXhwIjoxNzMzMjM0MDA4fQ.7bPlGpGp2tzcghjVEdmVCQvMVs1iL4mUd646qe-fLbw
+
+
+### Create order
+PUT http://127.0.0.1:3000/user/enduser/add-order
+Content-Type: application/json
+Authorization: token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NGVmYjRjNDdiY2U3YmU3MTFlNzIyYSIsImlhdCI6MTczMzIzMDQwOCwiZXhwIjoxNzMzMjM0MDA4fQ.7bPlGpGp2tzcghjVEdmVCQvMVs1iL4mUd646qe-fLbw
+
+
+{
+    "size": "A4",
+    "nb_papers": 4,
+    "face": 2,
+    "printer": "674f013db27b8765e0811f6c"
+}
+
+### Delete order
+DELETE http://127.0.0.1:3000/user/admin/view-printer
+Content-Type: application/json
+Authorization: token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NGVmYjRjNDdiY2U3YmU3MTFlNzIyYSIsImlhdCI6MTczMzIzMDQwOCwiZXhwIjoxNzMzMjM0MDA4fQ.7bPlGpGp2tzcghjVEdmVCQvMVs1iL4mUd646qe-fLbw
+
+
+### Get report details
+GET http://127.0.0.1:3000/user/admin/view-report
+Content-Type: application/json
+Authorization: token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NGVmYjRjNDdiY2U3YmU3MTFlNzIyYSIsImlhdCI6MTczMzIzMDQwOCwiZXhwIjoxNzMzMjM0MDA4fQ.7bPlGpGp2tzcghjVEdmVCQvMVs1iL4mUd646qe-fLbw
+
+
+### Purchase paper
+POST http://127.0.0.1:3000/user/enduser/purchase-paper
+Content-Type: application/json
+Authorization: token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NGVmYjRjNDdiY2U3YmU3MTFlNzIyYSIsImlhdCI6MTczMzIzMDQwOCwiZXhwIjoxNzMzMjM0MDA4fQ.7bPlGpGp2tzcghjVEdmVCQvMVs1iL4mUd646qe-fLbw
+
+
+{
+    "amount": 10
+}
