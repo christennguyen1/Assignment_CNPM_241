@@ -1,8 +1,6 @@
 import { useNavigate } from "react-router";
 import HCMUT from "../../assets/HCMUT.jpg";
 
-const HomeWall = () => {
-    const user = JSON.parse(localStorage.getItem('users'));
     const navigate = useNavigate();
 
     const handleStartClick = () => {

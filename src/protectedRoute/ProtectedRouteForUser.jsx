@@ -1,4 +1,4 @@
-/* eslint-disable react/prop-types */
+import PropTypes from 'prop-types';
 import { Navigate } from "react-router"
 
 export const ProtectedRouteForUser = ({children}) => {
@@ -7,6 +7,10 @@ export const ProtectedRouteForUser = ({children}) => {
       return children
     }
     else {
-      return <Navigate to={'/login'}/>
+      return <Navigate to={'/log-in'}/>
     }
+}
+
+ProtectedRouteForUser.propTypes = {
+    children: PropTypes.node.isRequired
 }

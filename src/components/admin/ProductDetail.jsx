@@ -31,7 +31,7 @@ const ProductDetail = () => {
         <div>
             <div className="py-5 flex justify-between items-center">
                 {/* text  */}
-                <h1 className=" text-xl text-pink-300 font-bold">All Product</h1>
+                <h1 className=" text-xl text-black-300 font-bold">All Product</h1>
                 {/* Add Product Button  */}
                 <Link to={'/addproduct'}>
                     <button className="px-5 py-2 bg-pink-50 border border-pink-100 rounded-lg">Add Product</button>
@@ -46,7 +46,7 @@ const ProductDetail = () => {
             {/* table  */}
             <div className="w-full overflow-x-auto mb-5">
 
-                <table className="w-full text-left border border-collapse sm:border-separate border-pink-100 text-pink-400" >
+                <table className="w-full text-left border border-collapse sm:border-separate border-pink-100 text-black-400" >
 
                     <tbody>
                         <tr>
@@ -62,7 +62,7 @@ const ProductDetail = () => {
                         {getAllProduct.map((item, index) => {
                             const { id, title, price, category, date, productImageUrl } = item
                             return (
-                                <tr key={index} className="text-pink-300">
+                                <tr key={index} className="text-black-300">
                                     <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 ">
                                         {index + 1}.
                                     </td>

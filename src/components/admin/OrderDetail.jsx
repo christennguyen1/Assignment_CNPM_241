@@ -10,12 +10,12 @@ const OrderDetail = () => {
             <div>
                 <div className="py-5">
                     {/* text  */}
-                    <h1 className=" text-xl text-pink-300 font-bold">All Order</h1>
+                    <h1 className=" text-xl text-black font-bold">All Order</h1>
                 </div>
 
                 {/* table  */}
                 <div className="w-full overflow-x-auto">
-                    <table className="w-full text-left border border-collapse sm:border-separate border-pink-100 text-pink-400" >
+                    <table className="w-full text-left border border-collapse sm:border-separate border-pink-100 text-black-400" >
                         <tbody>
                             <tr>
                                 <th scope="col" className="h-12 px-6 text-md border-l first:border-l-0 border-pink-100 text-slate-700 bg-slate-100 font-bold fontPara">
@@ -106,7 +106,7 @@ const OrderDetail = () => {
                                         {order.cartItems.map((item, index) => {
                                             const { id, productImageUrl, title, category, price, quantity } = item
                                             return (
-                                                <tr key={index} className="text-pink-300">
+                                                <tr key={index} className="text-black">
                                                     <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 ">
                                                         {index + 1}
                                                     </td>

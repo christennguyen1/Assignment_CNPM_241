@@ -1,12 +1,12 @@
 import { useNavigate } from "react-router";
-import Layout from "../../components/layout/Layout.jsx";
+import Layout from "../../../components/layout/Layout.jsx";
 import { useContext, useState, useEffect, useCallback } from "react";
-import myContext from "../../context/myContext.jsx";
+import myContext from "../../../context/myContext.jsx";
 import toast from "react-hot-toast";
-import Loader from "../../components/loader/Loader.jsx";
+import Loader from "../../../components/loader/Loader.jsx";
 import { collection, addDoc } from "firebase/firestore";
-import { fireDB } from "../../firebase/FirebaseConfig.jsx";
-import HCMUT from "../../assets/HCMUT.png";
+import { fireDB } from "../../../firebase/FirebaseConfig.jsx";
+import HCMUT from "../../../assets/HCMUT.png";
 
 const ErrorReport = () => {
     const context = useContext(myContext);
@@ -85,7 +85,7 @@ const ErrorReport = () => {
                         }
                     }}
                 ></button>
-                <img className="w-full" src={HCMUT} alt=""/>
+                <img className="absolute top-0 left-0 z-0 w-full h-full object-cover" src={HCMUT} alt=""/>
             </Layout>
 
             {/* Main Content */}

@@ -8,9 +8,11 @@ import NoPage from "./pages/noPage/NoPage";
 import ProductInfo from "./pages/productInfo/ProductInfo";
 import ScrollTop from "./components/scrollTop/ScrollTop";
 import Cart from "./pages/cart/Cart";
-import PrintRequest from "./pages/print-request/PrintRequest.jsx";
+import PrintRequest from "./pages/user/print-request/PrintRequest.jsx";
 import AboutUs from  "./pages/about-us/AboutUs.jsx";
-import ErrorReport from "./pages/error-report/ErrorReport.jsx";
+import ErrorReport from "./pages/user/error-report/ErrorReport.jsx";
+import PrintManage from "./pages/admin/print-manage/PrintManage.jsx";
+import ErrorManage from "./pages/admin/error-manage/ErrorManage.jsx";
 import Signup from "./pages/registration/Signup";
 import Login from "./pages/registration/Login";
 import UserDashboard from "./pages/user/UserDashboard";
@@ -29,38 +31,56 @@ const App = () => {
       <Router>
         <ScrollTop />
         <Routes>
+          <Route path="/1" element={<Cart />} />
           <Route path="/" element={<HomePage />} />
           <Route path="/*" element={<NoPage />} />
           <Route path="/productinfo/:id" element={<ProductInfo />} />
-          <Route path="/print-request" element={<PrintRequest />} />
-          <Route path="/gio-hang" element={<Cart />} />
           <Route path="/about-us" element={<AboutUs />} />
-            <Route path="/error-report" element={<ErrorReport />} />
+          <Route path="/print-request" element={
+            <ProtectedRouteForUser>
+              <PrintRequest />
+            </ProtectedRouteForUser>
+          } />
+          <Route path="/error-report" element={
+            <ProtectedRouteForUser>
+              <ErrorReport/>
+            </ProtectedRouteForUser>
+          } />
+          <Route path="/print-manage" element={
+            <ProtectedRouteForAdmin>
+              <PrintManage/>
+            </ProtectedRouteForAdmin>
+          } />
+          <Route path="/error-manage" element={
+            <ProtectedRouteForAdmin>
+              <ErrorManage/>
+            </ProtectedRouteForAdmin>
+          } />
           <Route path="/sign-up" element={<Signup />} />
           <Route path="/log-in" element={<Login />} />
           <Route path="/category/:categoryname" element={<CategoryPage />} />  {/* category Page route  */}
           <Route path="/user-dashboard" element={
             <ProtectedRouteForUser>
-              <UserDashboard />
+              <UserDashboard/>
             </ProtectedRouteForUser>
           } />
           <Route path="/admin-dashboard" element={
             <ProtectedRouteForAdmin>
-              <AdminDashboard />
+              <AdminDashboard/>
             </ProtectedRouteForAdmin>
           } />
           <Route path="/addproduct" element={
             <ProtectedRouteForAdmin>
-              <AddProductPage />
+              <AddProductPage/>
             </ProtectedRouteForAdmin>
           } />
           <Route path="/updateproduct/:id" element={
             <ProtectedRouteForAdmin>
-              <UpdateProductPage />
+              <UpdateProductPage/>
             </ProtectedRouteForAdmin>
           } />
         </Routes>
-        <Toaster />
+        <Toaster/>
       </Router>
     </MyState>
   );

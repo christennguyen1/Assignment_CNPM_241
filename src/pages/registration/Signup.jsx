@@ -70,7 +70,7 @@ const Signup = () => {
             toast.success("Đăng ký thành công");
 
             setLoading(false);
-            navigate('/login')
+            navigate('/log-in')
         } catch (error) {
             if (error.code === 'auth/email-already-in-use') {
                 toast.error("Email đã có người đăng ký");

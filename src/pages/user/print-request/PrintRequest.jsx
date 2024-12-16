@@ -1,7 +1,7 @@
-import Layout from "../../components/layout/Layout";
-import OrderPrint from "../../components/order-print/OrderPrint.jsx";
-import BuyPaper from "../../components/buy-paper/BuyPaper.jsx";
-import PrintHistory from "../../components/print-history/PrintHistory.jsx"
+import Layout from "../../../components/layout/Layout.jsx";
+import OrderPrint from "../../../components/order-print/OrderPrint.jsx";
+import BuyPaper from "../../../components/buy-paper/BuyPaper.jsx";
+import PrintHistory from "../../../components/print-history/PrintHistory.jsx"
 
 const PrintRequest = () => {
     return (
