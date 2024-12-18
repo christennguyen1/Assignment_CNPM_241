@@ -10,10 +10,10 @@ Currently, two official plugins are available:
 The project temporarily uses Firebase for authentication and Firestore for the database.
 
 To login to the app as an admin, use the following credential:
-- Username: `ep@gmail.com`
-- Password: `159753`
+- Username: `admin@gmail.com`
+- Password: `123456`
 
 To login to the app as a user, register or use the following credential:
-- Username: `eca@gmail.com`
-- Password: `159753`
+- Username: `user@gmail.com`
+- Password: `123456`
 
