@@ -139,7 +139,7 @@ const OrderPrint = () => {
         <div
             className="flex-[2_1_60%] border border-gray-300 flex flex-col items-start justify-start p-3 relative">
             <div className="mt-5 mb-5 ml-5">
-                <h2 className='text-left text-2xl font-bold'>
+                <h2 className='text-left text-2xl font-poppins_bold'>
                     Đặt in
                 </h2>
             </div>
@@ -323,7 +323,7 @@ const OrderPrint = () => {
             <class className="w-full flex">
                 <div className='w-1/2 flex flex-col ml-5'>
                     <p className='text-gray-400 text-sm'>Tổng trang: {totalPages}</p>
-                    <span className='text-black font-bold'>Tổng giá: {totalPrice} VND</span>
+                    <span className='text-black font-poppins_bold'>Tổng giá: {totalPrice} VND</span>
                 </div>
 
                 {/* Submit Button */}
@@ -331,7 +331,7 @@ const OrderPrint = () => {
                     <input
                         type="submit"
                         value="Đặt in"
-                        className='text-white bg-black border border-black hover:bg-gray-600 hover:text-black py-2 px-4 font-bold rounded-md mt-2'
+                        className='text-white bg-black border border-black hover:bg-gray-600 hover:text-black py-2 px-4 font-poppins_bold rounded-full mt-2'
                     />
                 </div>
             </class>

@@ -4,7 +4,7 @@ const PrintHistory = () => {
     return (
         <div className="relative">
             <div className="sticky top-0 py-5 px-8 bg-white z-5 border-b border-gray-300">
-                <h2 className="text-xl font-bold">Lịch sử in</h2>
+                <h2 className="text-xl font-poppins_bold">Lịch sử in</h2>
             </div>
             <ul className="list-none overflow-y-auto h-[calc(100vh-8rem)] w-full">
                 {Array.from({length: 100}, (_, i) => {

@@ -28,7 +28,7 @@ const BuyPaper = () => {
     return (
         <div className="flex-[2_0_30%] border border-gray-300 flex flex-col items-start justify-start p-3 relative">
             <div className="mt-5 mb-5 ml-5">
-                <h2 className='text-left text-2xl font-bold'>
+                <h2 className='text-left text-2xl font-poppins_bold'>
                     Mua giấy
                 </h2>
             </div>
@@ -74,7 +74,7 @@ const BuyPaper = () => {
                         <input
                             type="submit"
                             value="Mua giấy"
-                            className='w-full text-white bg-black border border-black hover:bg-gray-600 hover:text-black py-2 px-4 font-bold rounded-md mt-2'
+                            className='w-full text-white bg-black border border-black hover:bg-gray-600 hover:text-black py-2 px-4 font-poppins_bold rounded-full mt-2'
                         />
                     </div>
 
@@ -83,13 +83,13 @@ const BuyPaper = () => {
                         <input
                             type="submit"
                             value="BKPay"
-                            className='w-full text-white bg-gray-500 border border-gray-500 hover:border-black hover:bg-gray-600 hover:text-black py-2 px-4 font-bold rounded-md mt-2'
+                            className='w-full text-white bg-gray-500 border border-gray-500 hover:border-black hover:bg-gray-600 hover:text-black py-2 px-4 font-poppins_bold rounded-full mt-2'
                         />
                     </div>
                 </div>
             </div>
             <div className='w-1/2 flex flex-col ml-5 mb-5'>
-                <span className='text-black font-bold'>Tổng giá: {price} VND</span>
+                <span className='text-black font-poppins_bold'>Tổng giá: {price} VND</span>
             </div>
         </div>
     )

@@ -51,11 +51,7 @@ const Login = () => {
                     })
                     toast.success("Đăng nhập thành công");
                     setLoading(false);
-                    if(user.role === "user") {
-                        navigate('/user-dashboard');
-                    }else{
-                        navigate('/admin-dashboard');
-                    }
+                    navigate('/');
                 });
                 return () => data;
             } catch (error) {

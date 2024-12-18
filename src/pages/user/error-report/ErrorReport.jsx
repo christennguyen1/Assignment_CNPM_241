@@ -102,7 +102,7 @@ const ErrorReport = () => {
                 >
                     {/* Top Heading */}
                     <div className="mb-5">
-                        <h2 className='text-left text-2xl font-bold'>
+                        <h2 className='text-left text-2xl font-poppins_bold'>
                             Báo Lỗi
                         </h2>
                         <div className='text-left text-sm text-gray-700 mt-2'>
@@ -151,14 +151,14 @@ const ErrorReport = () => {
                     <div className="mb-5 flex justify-between mt-5">
                         <button
                             type='submit'
-                            className='text-white bg-black border border-black hover:bg-gray-500 hover:text-black w-full text-center py-2 font-bold rounded-md mr-2'
+                            className='text-white bg-black border border-black hover:bg-gray-500 hover:text-black w-full text-center py-2 font-poppins_bold rounded-full mr-2'
                         >
                             Gửi yêu cầu
                         </button>
                         <button
                             type='button'
                             onClick={() => handleCancel().catch(error => console.error(error))}
-                            className='bg-gray-500 hover:bg-gray-600 w-full text-white text-center py-2 font-bold rounded-md ml-2'
+                            className='bg-gray-500 hover:bg-gray-600 w-full text-white text-center font-poppins_bold rounded-full ml-2'
                         >
                             Hủy
                         </button>

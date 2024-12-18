@@ -7,7 +7,6 @@ import Logo from "../../assets/Logo.png";
 const UserDashboard = () => {
     // user
     const user = JSON.parse(localStorage.getItem('users'));
-
     const context = useContext(myContext);
     const { loading, getAllOrder } = context;
 
