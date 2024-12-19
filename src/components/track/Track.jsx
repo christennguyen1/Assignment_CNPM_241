@@ -4,15 +4,15 @@ const Track = () => {
             <div className="container mx-auto px-5 py-10 md:py-14">
                 {/* main  */}
                 {/* Heading  */}
-                <h1 className='text-center text-3xl font-bold text-black mb-5'>Hệ thống in thông minh cho sinh viên HCMUT</h1>
+                <h1 className='text-center text-3xl font-poppins_bold mb-5'>Hệ thống in thông minh cho sinh viên HCMUT</h1>
 
                 {/* para  */}
                 <h2 className='text-left text-2xl mb-7'>
-                    <span style={{color: '#1488D8'}}>HCMUT-SSPS</span> là hệ thống được xây dựng bởi đại học Bách Khoa thành phố Hồ Chí Minh nhằm mục đích phục vụ, in ấn tài liệu cho sinh viên của trường một cách tiện lợi nhất. Hệ thống cam kết mang lại những giá trị sau:
+                    <span style={{color: '#1488D8', fontWeight: 'bold'}}>HCMUT-SSPS</span> là hệ thống được xây dựng bởi đại học Bách Khoa thành phố Hồ Chí Minh nhằm mục đích phục vụ, in ấn tài liệu cho sinh viên của trường một cách tiện lợi nhất. Hệ thống cam kết mang lại những giá trị sau:
                 </h2>
 
                 {/* para  */}
-                <p className='text-left text-gray-600 mb-12 text-md'>Thời gian hoạt động:  5:00 - 22:00 hàng ngày</p>
+                <p className='text-left text-gray-600 mb-12'>Thời gian hoạt động:  5:00 - 22:00 hàng ngày</p>
 
                 <div className="flex flex-wrap -m-4 text-center">
                     {/* Track 1 */}

@@ -7,7 +7,7 @@ const PrintRequest = () => {
     return (
         <Layout>
             <div className="flex h-screen p-5 gap-5 box-border">
-                <div className="flex-[1_1_33%] border border-gray-300">
+                <div className="flex-[1_1_33%] rounded-lg border border-gray-300">
                     <PrintHistory/>
                 </div>
                 <div className="flex-[1_1_67%] flex flex-col mr-5 gap-5 overflow-y-auto">

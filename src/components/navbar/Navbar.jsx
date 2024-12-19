@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import Logo from "../../assets/Logo.svg";
+import Logo from "../../assets/logo.svg";
 
 const Navbar = () => {
     const user = JSON.parse(localStorage.getItem('users'));
@@ -136,15 +136,15 @@ const Navbar = () => {
                 ) : (
                     <div className="flex items-center">
                         <div className="relative">
-                            <button onClick={toggleDropdown} className="flex items-center justify-center rounded-full py-1.5 px-1.5 text-white" style={{ backgroundColor: userColor, color: textColor, width: '40px', height: '40px' }}>
+                            <button onClick={toggleDropdown} className="flex items-center justify-center rounded-full py-1.5 px-1.5 text-white font-poppins font-medium" style={{ backgroundColor: userColor, color: textColor, width: '40px', height: '40px' }}>
                                 {getInitials(user.name)}
                             </button>
                             {dropdownOpen && (
                                 <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
-                                    <Link to={user?.role === 'admin' ? '/admin-dashboard' : '/user-dashboard'} className="block px-4 py-2 text-gray-800 hover:bg-gray-100">
+                                    <Link to={user?.role === 'admin' ? '/admin-dashboard' : '/user-dashboard'} className="block px-5 py-3 text-black_gray hover:bg-gray-100">
                                         Profile
                                     </Link>
-                                    <button onClick={logout} className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100">Log out</button>
+                                    <button onClick={logout} className="block w-full text-left px-5 py-3 text-black_gray hover:bg-gray-100 font-poppins font-medium">Log out</button>
                                 </div>
                             )}
                         </div>

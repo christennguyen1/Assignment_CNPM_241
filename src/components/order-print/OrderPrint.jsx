@@ -137,7 +137,7 @@ const OrderPrint = () => {
 
     return (
         <div
-            className="flex-[2_1_60%] border border-gray-300 flex flex-col items-start justify-start p-3 relative">
+            className="flex-[2_1_60%] border rounded-xl border-gray-300 flex flex-col items-start justify-start p-3 relative">
             <div className="mt-5 mb-5 ml-5">
                 <h2 className='text-left text-2xl font-poppins_bold'>
                     Đặt in
@@ -331,7 +331,7 @@ const OrderPrint = () => {
                     <input
                         type="submit"
                         value="Đặt in"
-                        className='text-white bg-black border border-black hover:bg-gray-600 hover:text-black py-2 px-4 font-poppins_bold rounded-full mt-2'
+                        className='text-white bg-black hover:bg-[#1488D8] hover:scale-105 py-2 px-4 font-poppins_bold rounded-full mt-2 transition-transform duration-300'
                     />
                 </div>
             </class>

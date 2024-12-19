@@ -126,7 +126,7 @@ const ErrorReport = () => {
                                     title: e.target.value
                                 });
                             }}
-                            className='bg-gray-200 border border-black px-2 py-2 w-full rounded-md outline-none placeholder-gray-500'
+                            className='bg-gray-200 px-2 py-2 w-full rounded-md outline-none placeholder-gray-500'
                         />
                     </div>
 
@@ -143,22 +143,22 @@ const ErrorReport = () => {
                                     description: e.target.value
                                 });
                             }}
-                            className='bg-gray-200 border border-black px-2 py-2 w-full rounded-md outline-none placeholder-gray-500 h-full'
+                            className='bg-gray-200 px-2 py-2 w-full rounded-md outline-none placeholder-gray-500 h-full'
                         />
                     </div>
 
                     {/* Submit and Cancel Buttons */}
-                    <div className="mb-5 flex justify-between mt-5">
+                    <div className="mb-3 flex justify-end mt-5">
                         <button
                             type='submit'
-                            className='text-white bg-black border border-black hover:bg-gray-500 hover:text-black w-full text-center py-2 font-poppins_bold rounded-full mr-2'
+                            className='text-white bg-black hover:bg-[#1488D8] hover:scale-105 text-center py-2 px-4 font-poppins_bold rounded-full mr-2'
                         >
                             Gửi yêu cầu
                         </button>
                         <button
                             type='button'
                             onClick={() => handleCancel().catch(error => console.error(error))}
-                            className='bg-gray-500 hover:bg-gray-600 w-full text-white text-center font-poppins_bold rounded-full ml-2'
+                            className='bg-gray-500 hover:bg-[#1488D8] hover:scale-105 text-white text-center py-2 px-4 font-poppins_bold rounded-full ml-2'
                         >
                             Hủy
                         </button>

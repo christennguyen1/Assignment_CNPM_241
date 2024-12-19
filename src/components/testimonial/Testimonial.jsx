@@ -17,7 +17,7 @@ const Testimonial = () => {
                         <div className="p-4 md:w-1/3 sm:w-1/2 w-full">
                             <div className="h-full text-center">
                                 <img alt="testimonial"
-                                     className="w-20 h-20 object-cover object-center rounded-full inline-block border-2 border-gray-200 bg-gray-100"
+                                     className="w-20 h-20 object-cover object-center rounded-full inline-block bg-gray-100"
                                      src="https://u.cubeupload.com/BinhDangCap/Hung.jpg"/>
                                 <div><span className="inline-block h-1 w-10 rounded"
                                            style={{backgroundColor: '#1488D8'}}/></div>
@@ -30,7 +30,7 @@ const Testimonial = () => {
                         <div className="p-4 md:w-1/3 sm:w-1/2 w-full">
                             <div className="h-full text-center">
                                 <img alt="testimonial"
-                                     className="w-20 h-20 object-cover object-center rounded-full inline-block border-2 border-gray-200 bg-gray-100"
+                                     className="w-20 h-20 object-cover object-center rounded-full inline-block bg-gray-100"
                                      src="https://u.cubeupload.com/BinhDangCap/BinhDangCap.jpg"/>
                                 <div><span className="inline-block h-1 w-10 rounded"
                                            style={{backgroundColor: '#1488D8'}}/></div>
@@ -43,7 +43,7 @@ const Testimonial = () => {
                         <div className="p-4 md:w-1/3 sm:w-1/2 w-full">
                             <div className="h-full text-center">
                                 <img alt="testimonial"
-                                     className="w-20 h-20 object-cover object-center rounded-full inline-block border-2 border-gray-200 bg-gray-100"
+                                     className="w-20 h-20 object-cover object-center rounded-full inline-block bg-gray-100"
                                      src="https://u.cubeupload.com/BinhDangCap/HoanBao.jpg"/>
                                 <div><span className="inline-block h-1 w-10 rounded"
                                            style={{backgroundColor: '#1488D8'}}/></div>
@@ -56,7 +56,7 @@ const Testimonial = () => {
                         <div className="p-4 md:w-1/4 sm:w-1/2 w-full">
                             <div className="h-full text-center">
                                 <img alt="testimonial"
-                                     className="w-20 h-20 object-cover object-center rounded-full inline-block border-2 border-gray-200 bg-gray-100"
+                                     className="w-20 h-20 object-cover object-center rounded-full inline-block bg-gray-100"
                                      src="https://u.cubeupload.com/BinhDangCap/Quy.jpg"/>
                                 <div><span className="inline-block h-1 w-10 rounded"
                                            style={{backgroundColor: '#1488D8'}}/></div>
@@ -69,7 +69,7 @@ const Testimonial = () => {
                         <div className="p-4 md:w-1/4 sm:w-1/2 w-full">
                             <div className="h-full text-center">
                                 <img alt="testimonial"
-                                     className="w-20 h-20 object-cover object-center rounded-full inline-block border-2 border-gray-200 bg-gray-100"
+                                     className="w-20 h-20 object-cover object-center rounded-full inline-block bg-gray-100"
                                      src="https://u.cubeupload.com/BinhDangCap/Kiet.jpg"/>
                                 <div><span className="inline-block h-1 w-10 rounded"
                                            style={{backgroundColor: '#1488D8'}}/></div>
@@ -82,7 +82,7 @@ const Testimonial = () => {
                         <div className="p-4 md:w-1/4 sm:w-1/2 w-full">
                             <div className="h-full text-center">
                                 <img alt="testimonial"
-                                     className="w-20 h-20 object-cover object-center rounded-full inline-block border-2 border-gray-200 bg-gray-100"
+                                     className="w-20 h-20 object-cover object-center rounded-full inline-block bg-gray-100"
                                      src="https://u.cubeupload.com/BinhDangCap/HoanBao.jpg"/>
                                 <div><span className="inline-block h-1 w-10 rounded"
                                            style={{backgroundColor: '#1488D8'}}/></div>
@@ -95,7 +95,7 @@ const Testimonial = () => {
                         <div className="p-4 md:w-1/4 sm:w-1/2 w-full">
                             <div className="h-full text-center">
                                 <img alt="testimonial"
-                                     className="w-20 h-20 object-cover object-center rounded-full inline-block border-2 border-gray-200 bg-gray-100"
+                                     className="w-20 h-20 object-cover object-center rounded-full inline-block bg-gray-100"
                                      src="https://u.cubeupload.com/BinhDangCap/Vinh.jpg"/>
                                 <div><span className="inline-block h-1 w-10 rounded"
                                            style={{backgroundColor: '#1488D8'}}/></div>
@@ -108,7 +108,7 @@ const Testimonial = () => {
 
                     <div className="flex justify-center w-full mt-32">
                         <div
-                            className="order-2 hover:shadow-xl hover:shadow-gray-200 border-gray-200 bg-gray-100 shadow-[inset_0_0_2px_rgba(0,0,0,0.6)] px-4 py-6 rounded-lg">
+                            className="order-2 hover:shadow-xl hover:shadow-gray-200 bg-gray-100 shadow-[inset_0_0_2px_rgba(0,0,0,0.6)] px-4 py-6 rounded-lg">
                             <div className="flex items-center justify-center whitespace-nowrap">
                                 <p className='font-bold text-black text-center text-xl'>
                                     Logo nhận dạng máy in thuộc hệ thống
