@@ -7,6 +7,7 @@ import { Timestamp, addDoc, setDoc, doc, collection, getDoc } from "firebase/fir
 import myContext from "../../context/myContext.jsx";
 import Loader from "../loader/Loader.jsx";
 import { ref, uploadBytesResumable } from "firebase/storage";
+import trash from "../../assets/trash.svg";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjsLib.version}/legacy/build/pdf.worker.min.mjs`;
 
@@ -40,13 +41,59 @@ const OrderPrint = () => {
                 setUserPaperCount(userData[paperSize]);
             }
         } catch (error) {
-            console.error('Error getting user paper count:', error);
+            console.error('Lỗi không thể đếm trang tệp:', error);
         }
     }, [user.uid, paperSize]);
 
     useEffect(() => {
         void getUserPaperCount();
     }, [getUserPaperCount]);
+
+    const removeFile = async (fileName) => {
+        const fileToRemove = files.find(file => file.name === fileName);
+
+        if (fileToRemove) {
+            let pagesToRemove = 0;
+            if (fileToRemove.type === 'application/pdf') {
+                const arrayBuffer = await fileToRemove.arrayBuffer();
+                const pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                pagesToRemove = pdfDoc.numPages;
+            } else if (fileToRemove.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || fileToRemove.type === 'application/msword') {
+                const arrayBuffer = await fileToRemove.arrayBuffer();
+                const result = await mammoth.extractRawText({ arrayBuffer });
+                const wordCount = result.value.split(/\s+/).length;
+                pagesToRemove = Math.ceil(wordCount / 500); // Assuming 500 words per page
+            }
+
+            setTotalPages(prevTotalPages => prevTotalPages - pagesToRemove);
+            setTotalPrice(prevTotalPrice => {
+                let pricePerCopy;
+                switch (paperSize) {
+                    case 'a3':
+                        pricePerCopy = 600;
+                        break;
+                    case 'a4':
+                        pricePerCopy = 300;
+                        break;
+                    case 'a5':
+                        pricePerCopy = 150;
+                        break;
+                    default:
+                        pricePerCopy = 0;
+                }
+                const priceToRemove = pricePerCopy * copies * pagesToRemove;
+                return prevTotalPrice - priceToRemove;
+            });
+        }
+
+        setFileNames(prevFileNames => prevFileNames.filter(name => name !== fileName));
+        setFiles(prevFiles => prevFiles.filter(file => file.name !== fileName));
+        setUploadProgress(prevProgress => {
+            const newProgress = { ...prevProgress };
+            delete newProgress[fileName];
+            return newProgress;
+        });
+    };
 
     const handleUploadProgress = (file, snapshot) => {
         const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
@@ -57,19 +104,19 @@ const OrderPrint = () => {
     };
 
     const handleUploadError = (error, reject) => {
-        console.error('Error uploading file:', error);
+        console.error('Lỗi khi tải lên tệp:', error);
         reject(error);
     };
 
     const handleUploadSuccess = (resolve) => {
-        console.log('File uploaded successfully!');
+        console.log('Tệp tải lên thành công!');
         resolve();
     };
 
     const uploadFile = useCallback((file, oid) => {
         return new Promise((resolve, reject) => {
             if (!file) {
-                console.error('File is undefined');
+                console.error('Không thể xác định tệp');
                 return;
             }
             try {
@@ -82,16 +129,27 @@ const OrderPrint = () => {
                     () => handleUploadSuccess(resolve)
                 );
             } catch (error) {
-                console.error('Error uploading file:', error);
+                console.error('Lỗi không thể tải lên tệp:', error);
             }
         });
     }, [user.uid]);
 
     const sendPrintOrderFunction = useCallback(async () => {
         if (location === "" || paperSize === "" || copies === 0 || printer === "" || sides === "" || fileNames.length === 0) {
-            toast.error("All print order fields are required");
+            toast.error("Tất cả các trường đặt in là bắt buộc");
             return;
         }
+
+        let paperNeeded = totalPages * copies;
+        if (sides === "2") {
+            paperNeeded = Math.ceil(paperNeeded / 2);
+        }
+
+        if (paperNeeded > userPaperCount) {
+            toast.error(`Bạn không có đủ giấy ${paperSize.toUpperCase()} để hoàn thành yêu cầu in này`);
+            return;
+        }
+
         setLoading(true);
         try {
             const docRef = await addDoc(collection(fireDB, "print-order"), {
@@ -114,8 +172,13 @@ const OrderPrint = () => {
             await Promise.all(uploadPromises);
 
             await setDoc(doc(fireDB, "print-order", oid), { oid }, { merge: true });
+
+            // Update user's paper count
+            const newPaperCount = userPaperCount - paperNeeded;
+            await setDoc(doc(fireDB, "user", user.uid), { [paperSize]: newPaperCount }, { merge: true });
+
             setLoading(false);
-            toast.success("Print order placed successfully. Click anywhere to continue.", {
+            toast.success("Yêu cầu đặt in thành công\nẤn bất kì đâu để tiếp tục", {
                 duration: 5000,
                 onClick: () => window.location.reload()
             });
@@ -124,9 +187,9 @@ const OrderPrint = () => {
         } catch (error) {
             setLoading(false);
             console.log(error);
-            toast.error("Failed to place print order");
+            toast.error("Lỗi không thể đặt in");
         }
-    }, [location, paperSize, copies, printer, sides, fileNames.length, setLoading, customLocation, totalPrice, totalPages, user.uid, files, uploadFile]);
+    }, [location, paperSize, copies, printer, sides, fileNames.length, setLoading, customLocation, totalPrice, totalPages, user.uid, files, uploadFile, userPaperCount]);
 
     const handleDragOver = (e) => {
         e.preventDefault();
@@ -147,7 +210,7 @@ const OrderPrint = () => {
         const uniqueFileNames = uniqueFiles.map(file => file.name);
 
         if (uniqueFileNames.length < newFileNames.length) {
-            toast.error("Some files are already uploaded");
+            toast.error("Một số tệp đã được thêm vào danh sách");
         }
 
         return { uniqueFiles, uniqueFileNames };
@@ -157,7 +220,36 @@ const OrderPrint = () => {
         e.preventDefault();
         setDragging(false);
         const droppedFiles = Array.from(e.dataTransfer.files);
-        const { uniqueFiles, uniqueFileNames } = getUniqueFiles(droppedFiles, fileNames);
+        const validFiles = droppedFiles.filter(file =>
+            file.type === 'application/pdf' ||
+            file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+            file.type === 'application/msword'
+        );
+
+        if (validFiles.length < droppedFiles.length) {
+            toast.error("Chỉ chấp nhận tệp PDF, DOCX và DOC");
+        }
+
+        const { uniqueFiles, uniqueFileNames } = getUniqueFiles(validFiles, fileNames);
+
+        setFileNames(prevFileNames => [...prevFileNames, ...uniqueFileNames]);
+        setFiles(prevFiles => [...prevFiles, ...uniqueFiles]);
+        await handleFiles(uniqueFiles);
+    };
+
+    const handleFileChange = async (e) => {
+        const selectedFiles = Array.from(e.target.files);
+        const validFiles = selectedFiles.filter(file =>
+            file.type === 'application/pdf' ||
+            file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+            file.type === 'application/msword'
+        );
+
+        if (validFiles.length < selectedFiles.length) {
+            toast.error("Chỉ chấp nhận tệp PDF, DOCX và DOC");
+        }
+
+        const { uniqueFiles, uniqueFileNames } = getUniqueFiles(validFiles, fileNames);
 
         setFileNames(prevFileNames => [...prevFileNames, ...uniqueFileNames]);
         setFiles(prevFiles => [...prevFiles, ...uniqueFiles]);
@@ -166,15 +258,6 @@ const OrderPrint = () => {
 
     const handleBoxClick = () => {
         fileInputRef.current.click();
-    };
-
-    const handleFileChange = async (e) => {
-        const selectedFiles = Array.from(e.target.files);
-        const { uniqueFiles, uniqueFileNames } = getUniqueFiles(selectedFiles, fileNames);
-
-        setFileNames(prevFileNames => [...prevFileNames, ...uniqueFileNames]);
-        setFiles(prevFiles => [...prevFiles, ...uniqueFiles]);
-        await handleFiles(uniqueFiles);
     };
 
     const handleFiles = async (files) => {
@@ -188,7 +271,7 @@ const OrderPrint = () => {
                     const pdfDoc = await loadingTask.promise;
                     TotalPageCount += pdfDoc.numPages;
                 } catch (error) {
-                    console.error('Error loading PDF:', error);
+                    console.error('Không thể đọc tệp PDF:', error);
                 }
             } else if (file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || file.type === 'application/msword') {
                 try {
@@ -198,7 +281,7 @@ const OrderPrint = () => {
                     const estimatedPages = Math.ceil(wordCount / 500); // Assuming 500 words per page
                     TotalPageCount += estimatedPages;
                 } catch (error) {
-                    console.error('Error loading DOC/DOCX:', error);
+                    console.error('Không thể đọc tệp DOCX/DOC:', error);
                 }
             }
         }
@@ -264,7 +347,7 @@ const OrderPrint = () => {
     return (
         <div
             className="flex-[2_1_60%] border rounded-xl border-gray-300 flex flex-col items-start justify-start p-3 relative">
-            {loading && <Loader />}
+            {loading && <Loader/>}
             <div className="mt-5 mb-5 ml-5">
                 <h2 className='text-left text-2xl font-poppins_bold'>
                     Đặt in
@@ -446,6 +529,15 @@ const OrderPrint = () => {
                                         {uploadProgress[fileName].toFixed(2)}%
                                     </span>
                                 )}
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        void removeFile(fileName);
+                                    }}
+                                    className="ml-2 text-red-500 hover:text-red-700"
+                                >
+                                    <img src={trash} alt="Remove" className="w-6 h-6"/>
+                                </button>
                             </li>
                         ))}
                     </ul>

@@ -37,28 +37,26 @@ const PrintHistory = () => {
             <ul className="list-none overflow-y-auto h-[calc(100vh-8rem)] w-full">
                 {printHistory.map((order) => (
                     <li key={order.id}
-                        className={`py-2 px-2 border-b border-gray-200 flex items-center w-full`}>
+                        className={`py-2 px-2 border-b border-gray-200 flex items-center w-full justify-between`}>
                         <div className="w-2/3 flex-col ml-6">
-                            <div className='flex'>Ngày in: <p
-                                className='font-bold ml-1'>{order.createdAt.toDate().toLocaleString('vi-VN', {hour12: false})}</p>
+                            <div className='flex'>Thời gian: <p
+                                className='font-poppins_semibold ml-1'>{order.createdAt.toDate().toLocaleString('vi-VN', {hour12: false})}</p>
                             </div>
                             <div className='flex'>Đã sử dụng: <p
-                                className='font-bold ml-1'>{order.totalPages} tờ {order.paperSize.toUpperCase()}</p>
+                                className='font-poppins_semibold ml-1'>{order.totalPages} trang {order.paperSize.toUpperCase()}</p>
                             </div>
                             <div className='flex'>Địa điểm:
-                                <p className='font-bold ml-1'>
+                                <p className='font-poppins_semibold ml-1'>
                                     {order.location === 'custom' ? 'Ship tận nơi' : order.location.toUpperCase()}
                                 </p>
                             </div>
-                            <div className='flex'>Tổng giá: <p className='font-bold ml-1'>{order.totalPrice} VND</p>
+                            <div className='flex'>Tổng giá: <p className='font-poppins_semibold ml-1'>{order.totalPrice} VND</p>
                             </div>
                         </div>
-                        <div className='flex-col ml-5 flex items-center w-1/3'>
-                            <div className='flex flex-col items-center justify-end w-full'>
-                                <p className="whitespace-nowrap font-poppins_semibold p-2">{statusMap[order.status]?.text || order.status}</p>
-                                {statusMap[order.status] &&
-                                    <img src={statusMap[order.status].icon} alt={order.status} className='w-8 h-8' />}
-                            </div>
+                        <div className='flex flex-col items-center mb-2 mr-5 justify-center'>
+                            <p className="whitespace-nowrap font-poppins_bold p-1 w-16 text-center">{statusMap[order.status]?.text || order.status}</p>
+                            {statusMap[order.status] &&
+                                <img src={statusMap[order.status].icon} alt={order.status} className='w-8 h-8'/>}
                         </div>
                     </li>
                 ))}
