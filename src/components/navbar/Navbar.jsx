@@ -57,7 +57,7 @@ const Navbar = () => {
     };
 
     const navList = (
-        <ul className="font-poppins font-medium text-black_gray text-[17px] space-x-16 flex">
+        <ul className="font-poppins font-medium text-[17px] space-x-16 flex">
             <li>
                 <Link to={'/'}>
                     <div className="flex items-center">
@@ -131,20 +131,20 @@ const Navbar = () => {
             <div className="right flex justify-center relative">
                 {!user ? (
                     <Link to={'/log-in'}
-                          className="font-poppins font-medium text-black_gray text-[17px]">Log
+                          className="font-poppins font-medium text-[17px]">Log
                         in</Link>
                 ) : (
                     <div className="flex items-center">
                         <div className="relative">
-                            <button onClick={toggleDropdown} className="flex items-center justify-center rounded-full py-1.5 px-1.5 text-white font-poppins font-medium" style={{ backgroundColor: userColor, color: textColor, width: '40px', height: '40px' }}>
+                            <button onClick={toggleDropdown} className="flex items-center justify-center rounded-full py-1.5 px-1.5 text-white font-poppins_light font-bold" style={{ backgroundColor: userColor, color: textColor, width: '40px', height: '40px' }}>
                                 {getInitials(user.name)}
                             </button>
                             {dropdownOpen && (
-                                <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
-                                    <Link to={user?.role === 'admin' ? '/admin-dashboard' : '/user-dashboard'} className="block px-5 py-3 text-black_gray hover:bg-gray-100">
+                                <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg  font-poppins font-medium">
+                                    <Link to={user?.role === 'admin' ? '/admin-dashboard' : '/user-dashboard'} className="block hover:bg-gray-100 px-5 py-3">
                                         Profile
                                     </Link>
-                                    <button onClick={logout} className="block w-full text-left px-5 py-3 text-black_gray hover:bg-gray-100 font-poppins font-medium">Log out</button>
+                                    <button onClick={logout} className="block  hover:bg-gray-100 w-full text-left px-5 py-3">Log out</button>
                                 </div>
                             )}
                         </div>

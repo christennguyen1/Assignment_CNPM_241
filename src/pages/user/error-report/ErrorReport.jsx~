@@ -33,7 +33,6 @@ const ErrorReport = () => {
             await addDoc(collection(fireDB, "report"), {
                 title: report.title,
                 description: report.description,
-                uid: JSON.parse(localStorage.getItem('users')).uid,
                 timestamp: new Date()
             });
             setReport({

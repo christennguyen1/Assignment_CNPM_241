@@ -1,6 +1,5 @@
 
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import ProductDetail from '../../components/admin/ProductDetail';
 import OrderDetail from '../../components/admin/OrderDetail';
 import UserDetail from '../../components/admin/UserDetail';
 import { useContext } from 'react';
@@ -150,10 +149,6 @@ const AdminDashboard = () => {
                                 </div>
                             </Tab>
                         </TabList>
-
-                        <TabPanel>
-                            <ProductDetail />
-                        </TabPanel>
 
                         <TabPanel>
                             <OrderDetail/>

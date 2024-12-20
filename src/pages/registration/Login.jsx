@@ -21,10 +21,6 @@ const Login = () => {
         password: ""
     });
 
-    /**========================================================================
-     *                          User Login Function 
-    *========================================================================**/
-
     const userLoginFunction = async () => {
         // validation 
         if (userLogin.email === "" || userLogin.password === "") {

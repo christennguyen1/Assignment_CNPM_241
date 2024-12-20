@@ -5,7 +5,7 @@ export default withMT({
   theme: {
     extend: {
       colors: {
-        black_gray: '#212121',
+        black: "#212121",
       },
       fontFamily: {
         sans: ["Poppins_Regular", "sans-serif"],

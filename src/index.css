@@ -113,3 +113,41 @@
     font-weight: normal;
     font-style: normal;
 }
+
+
+html {
+    color: #212121;
+    text-decoration: none;
+}
+
+select {
+    border: 1px solid #e0e0e0;
+    scroll-behavior: smooth;
+}
+
+.loader-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align items to the top */
+    padding-top: 80px; /* Add some top padding */
+    z-index: 9999; /* Ensure it is on top of other elements */
+}
+
+.loader {
+    border: 16px solid #f3f3f3; /* Light grey */
+    border-top: 16px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

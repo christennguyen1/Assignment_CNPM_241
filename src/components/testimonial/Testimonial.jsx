@@ -3,11 +3,11 @@
 const Testimonial = () => {
     return (
         <div>
-            <section className="text-gray-600 body-font mb-10">
+            <section className="body-font mb-10">
                 {/* main  */}
                 <div className="container px-5 py-10 mx-auto">
                     {/* Heading  */}
-                    <h1 className=' text-center text-3xl font-bold text-black'>Đội ngũ phát triển: <span
+                    <h1 className=' text-center text-3xl font-bold'>Đội ngũ phát triển: <span
                         style={{color: '#1488D8'}}>Trai lầu xanh</span></h1>
                     {/* para  */}
                     <h2 className=' text-center text-2xl font-semibold mb-10'>Thành viên nhóm:</h2>
@@ -21,7 +21,7 @@ const Testimonial = () => {
                                      src="https://u.cubeupload.com/BinhDangCap/Hung.jpg"/>
                                 <div><span className="inline-block h-1 w-10 rounded"
                                            style={{backgroundColor: '#1488D8'}}/></div>
-                                <h2 className="text-gray-900 font-medium title-font tracking-wider text-sm uppercase">Nguyễn
+                                <h2 className="font-medium title-font tracking-wider text-sm uppercase">Nguyễn
                                     Minh Hưng</h2>
                             </div>
                         </div>
@@ -34,7 +34,7 @@ const Testimonial = () => {
                                      src="https://u.cubeupload.com/BinhDangCap/BinhDangCap.jpg"/>
                                 <div><span className="inline-block h-1 w-10 rounded"
                                            style={{backgroundColor: '#1488D8'}}/></div>
-                                <h2 className="text-gray-900 font-medium title-font tracking-wider text-sm uppercase">Phan
+                                <h2 className="font-medium title-font tracking-wider text-sm uppercase">Phan
                                     Thanh Bình</h2>
                             </div>
                         </div>
@@ -47,7 +47,7 @@ const Testimonial = () => {
                                      src="https://u.cubeupload.com/BinhDangCap/HoanBao.jpg"/>
                                 <div><span className="inline-block h-1 w-10 rounded"
                                            style={{backgroundColor: '#1488D8'}}/></div>
-                                <h2 className="text-gray-900 font-medium title-font tracking-wider text-sm uppercase">Vũ
+                                <h2 className="font-medium title-font tracking-wider text-sm uppercase">Vũ
                                     Đình Hoàn</h2>
                             </div>
                         </div>
@@ -60,7 +60,7 @@ const Testimonial = () => {
                                      src="https://u.cubeupload.com/BinhDangCap/Quy.jpg"/>
                                 <div><span className="inline-block h-1 w-10 rounded"
                                            style={{backgroundColor: '#1488D8'}}/></div>
-                                <h2 className="text-gray-900 font-medium title-font tracking-wider text-sm uppercase">Đỗ
+                                <h2 className="font-medium title-font tracking-wider text-sm uppercase">Đỗ
                                     Quý</h2>
                             </div>
                         </div>
@@ -73,7 +73,7 @@ const Testimonial = () => {
                                      src="https://u.cubeupload.com/BinhDangCap/Kiet.jpg"/>
                                 <div><span className="inline-block h-1 w-10 rounded"
                                            style={{backgroundColor: '#1488D8'}}/></div>
-                                <h2 className="text-gray-900 font-medium title-font tracking-wider text-sm uppercase">Nguyễn
+                                <h2 className="font-medium title-font tracking-wider text-sm uppercase">Nguyễn
                                     Quốc Kiệt</h2>
                             </div>
                         </div>
@@ -86,7 +86,7 @@ const Testimonial = () => {
                                      src="https://u.cubeupload.com/BinhDangCap/HoanBao.jpg"/>
                                 <div><span className="inline-block h-1 w-10 rounded"
                                            style={{backgroundColor: '#1488D8'}}/></div>
-                                <h2 className="text-gray-900 font-medium title-font tracking-wider text-sm uppercase">Nguyễn
+                                <h2 className="font-medium title-font tracking-wider text-sm uppercase">Nguyễn
                                     Hữu Bảo</h2>
                             </div>
                         </div>
@@ -99,7 +99,7 @@ const Testimonial = () => {
                                      src="https://u.cubeupload.com/BinhDangCap/Vinh.jpg"/>
                                 <div><span className="inline-block h-1 w-10 rounded"
                                            style={{backgroundColor: '#1488D8'}}/></div>
-                                <h2 className="text-gray-900 font-medium title-font tracking-wider text-sm uppercase">Nguyễn
+                                <h2 className="font-medium title-font tracking-wider text-sm uppercase">Nguyễn
                                     Khắc Vinh</h2>
                             </div>
                         </div>
@@ -110,7 +110,7 @@ const Testimonial = () => {
                         <div
                             className="order-2 hover:shadow-xl hover:shadow-gray-200 bg-gray-100 shadow-[inset_0_0_2px_rgba(0,0,0,0.6)] px-4 py-6 rounded-lg">
                             <div className="flex items-center justify-center whitespace-nowrap">
-                                <p className='font-bold text-black text-center text-xl'>
+                                <p className='font-bold text-center text-xl'>
                                     Logo nhận dạng máy in thuộc hệ thống
                                 </p>
                                 <img className="ml-6 w-65 h-12 object-cover rounded"

@@ -1,8 +1,7 @@
-/* eslint-disable react/no-unescaped-entities */
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import myContext from "../../context/myContext";
-import { Timestamp, addDoc, collection } from "firebase/firestore";
+import { Timestamp, setDoc, doc } from "firebase/firestore";
 import { auth, fireDB } from "../../firebase/FirebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import toast from "react-hot-toast";
@@ -12,20 +11,17 @@ const Signup = () => {
     const context = useContext(myContext);
     const {loading, setLoading } = context;
 
-    // navigate 
     const navigate = useNavigate();
 
-    // User Signup State 
     const [userSignup, setUserSignup] = useState({
         name: "",
         email: "",
         password: "",
-        role: "user"
+        role: "user",
+        a3: 0,
+        a4: 0,
+        a5: 0
     });
-
-    /**========================================================================
-     *                          User Signup Function 
-    *========================================================================**/
 
     const userSignupFunction = async () => {
         // validation
@@ -38,12 +34,14 @@ const Signup = () => {
         try {
             const users = await createUserWithEmailAndPassword(auth, userSignup.email, userSignup.password);
 
-            // create user object
             const user = {
                 name: userSignup.name,
                 email: users.user.email,
                 uid: users.user.uid,
                 role: userSignup.role,
+                a3: 0,
+                a4: 0,
+                a5: 0,
                 time: Timestamp.now(),
                 date: new Date().toLocaleString(
                     "en-US",
@@ -55,16 +53,16 @@ const Signup = () => {
                 )
             }
 
-            // create user Refrence
-            const userRefrence = collection(fireDB, "user")
-
-            // Add User Detail
-            await addDoc(userRefrence, user);
+            const userRefrence = doc(fireDB, "user", users.user.uid);
+            await setDoc(userRefrence, user);
 
             setUserSignup({
                 name: "",
                 email: "",
-                password: ""
+                password: "",
+                a3: 0,
+                a4: 0,
+                a5: 0
             })
 
             toast.success("Đăng ký thành công");
@@ -127,7 +125,7 @@ const Signup = () => {
                 </div>
 
                 {/* Input Three  */}
-                <div className="mb-5">
+                <div className="mb-3">
                     <input
                         type="password"
                         placeholder='Mật khẩu'
@@ -138,7 +136,7 @@ const Signup = () => {
                                 password: e.target.value
                             })
                         }}
-                        className='bg-gray-200 border border-black px-2 py-2 w-96 rounded-md outline-none placeholder-gray-700'
+                           className='bg-gray-200 border border-black px-2 py-2 w-96 rounded-md outline-none placeholder-gray-700'
                     />
                 </div>
 

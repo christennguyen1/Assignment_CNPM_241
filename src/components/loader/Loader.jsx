@@ -1,6 +1,6 @@
 const Loader = () => {
     return (
-        <div className="absolute">
+        <div className="loader-container">
             <svg
                 aria-hidden="true"
                 className="w-8 h-8 mr-2 text-gray-400 animate-spin fill-black"

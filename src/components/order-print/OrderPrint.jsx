@@ -1,11 +1,20 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef, useEffect, useContext } from 'react';
 import * as pdfjsLib from "pdfjs-dist";
 import mammoth from "mammoth";
+import toast from "react-hot-toast";
+import { fireDB, storage } from "../../firebase/FirebaseConfig.jsx";
+import { Timestamp, addDoc, setDoc, doc, collection, getDoc } from "firebase/firestore";
+import myContext from "../../context/myContext.jsx";
+import Loader from "../loader/Loader.jsx";
+import { ref, uploadBytesResumable } from "firebase/storage";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjsLib.version}/legacy/build/pdf.worker.min.mjs`;
 
 const OrderPrint = () => {
     const user = JSON.parse(localStorage.getItem('users'));
+    const context = useContext(myContext);
+    const { loading, setLoading } = context;
+
     const [dragging, setDragging] = useState(false);
     const [location, setLocation] = useState('');
     const [customLocation, setCustomLocation] = useState('');
@@ -16,7 +25,110 @@ const OrderPrint = () => {
     const [sides, setSides] = useState('');
     const [totalPages, setTotalPages] = useState(0);
     const [fileNames, setFileNames] = useState([]);
+    const [files, setFiles] = useState([]);
+    const [uploadProgress, setUploadProgress] = useState({});
     const fileInputRef = useRef(null);
+    const [userPaperCount, setUserPaperCount] = useState(user[paperSize]);
+
+    const getUserPaperCount = useCallback(async () => {
+        try {
+            const userRef = doc(fireDB, "user", user.uid);
+            const userDoc = await getDoc(userRef);
+
+            if (userDoc.exists()) {
+                const userData = userDoc.data();
+                setUserPaperCount(userData[paperSize]);
+            }
+        } catch (error) {
+            console.error('Error getting user paper count:', error);
+        }
+    }, [user.uid, paperSize]);
+
+    useEffect(() => {
+        void getUserPaperCount();
+    }, [getUserPaperCount]);
+
+    const handleUploadProgress = (file, snapshot) => {
+        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        setUploadProgress(prevProgress => ({
+            ...prevProgress,
+            [file.name]: progress
+        }));
+    };
+
+    const handleUploadError = (error, reject) => {
+        console.error('Error uploading file:', error);
+        reject(error);
+    };
+
+    const handleUploadSuccess = (resolve) => {
+        console.log('File uploaded successfully!');
+        resolve();
+    };
+
+    const uploadFile = useCallback((file, oid) => {
+        return new Promise((resolve, reject) => {
+            if (!file) {
+                console.error('File is undefined');
+                reject('File is undefined');
+                return;
+            }
+            try {
+                const storageRef = ref(storage, `print-order/${user.uid}/${oid}/${file.name}`);
+                const uploadTask = uploadBytesResumable(storageRef, file);
+
+                uploadTask.on('state_changed',
+                    (snapshot) => handleUploadProgress(file, snapshot),
+                    (error) => handleUploadError(error, reject),
+                    () => handleUploadSuccess(resolve)
+                );
+            } catch (error) {
+                console.error('Error uploading file:', error);
+                reject(error);
+            }
+        });
+    }, [user.uid]);
+
+    const sendPrintOrderFunction = useCallback(async () => {
+        if (location === "" || paperSize === "" || copies === 0 || printer === "" || sides === "" || fileNames.length === 0) {
+            toast.error("All print order fields are required");
+            return;
+        }
+        setLoading(true);
+        try {
+            const docRef = await addDoc(collection(fireDB, "print-order"), {
+                location: location,
+                customLocation: customLocation,
+                paperSize: paperSize,
+                copies: copies,
+                totalPrice: totalPrice,
+                printer: printer,
+                sides: sides,
+                totalPages: totalPages,
+                user: user.uid,
+                status: "pending",
+                createdAt: Timestamp.now()
+            });
+
+            const oid = docRef.id;
+
+            const uploadPromises = files.map(file => uploadFile(file, oid));
+            await Promise.all(uploadPromises);
+
+            await setDoc(doc(fireDB, "print-order", oid), { oid }, { merge: true });
+            setLoading(false);
+            toast.success("Print order placed successfully. Click anywhere to continue.", {
+                duration: 5000,
+                onClick: () => window.location.reload()
+            });
+
+            document.body.addEventListener('click', () => window.location.reload(), { once: true });
+        } catch (error) {
+            setLoading(false);
+            console.log(error);
+            toast.error("Failed to place print order");
+        }
+    }, [location, paperSize, copies, printer, sides, fileNames.length, setLoading, customLocation, totalPrice, totalPages, user.uid, files, uploadFile]);
 
     const handleDragOver = (e) => {
         e.preventDefault();
@@ -31,13 +143,27 @@ const OrderPrint = () => {
         setDragging(false);
     };
 
+    const getUniqueFiles = (files, existingFileNames) => {
+        const newFileNames = files.map(file => file.name);
+        const uniqueFiles = files.filter(file => !existingFileNames.includes(file.name));
+        const uniqueFileNames = uniqueFiles.map(file => file.name);
+
+        if (uniqueFileNames.length < newFileNames.length) {
+            toast.error("Some files are already uploaded");
+        }
+
+        return { uniqueFiles, uniqueFileNames };
+    };
+
     const handleDrop = async (e) => {
         e.preventDefault();
         setDragging(false);
-        const files = Array.from(e.dataTransfer.files);
-        const fileNamesArray = files.map(file => file.name);
-        setFileNames(prevFileNames => [...prevFileNames, ...fileNamesArray]);
-        await handleFiles(files);
+        const droppedFiles = Array.from(e.dataTransfer.files);
+        const { uniqueFiles, uniqueFileNames } = getUniqueFiles(droppedFiles, fileNames);
+
+        setFileNames(prevFileNames => [...prevFileNames, ...uniqueFileNames]);
+        setFiles(prevFiles => [...prevFiles, ...uniqueFiles]);
+        await handleFiles(uniqueFiles);
     };
 
     const handleBoxClick = () => {
@@ -45,10 +171,12 @@ const OrderPrint = () => {
     };
 
     const handleFileChange = async (e) => {
-        const files = Array.from(e.target.files);
-        const fileNamesArray = files.map(file => file.name);
-        setFileNames(prevFileNames => [...prevFileNames, ...fileNamesArray]);
-        await handleFiles(files);
+        const selectedFiles = Array.from(e.target.files);
+        const { uniqueFiles, uniqueFileNames } = getUniqueFiles(selectedFiles, fileNames);
+
+        setFileNames(prevFileNames => [...prevFileNames, ...uniqueFileNames]);
+        setFiles(prevFiles => [...prevFiles, ...uniqueFiles]);
+        await handleFiles(uniqueFiles);
     };
 
     const handleFiles = async (files) => {
@@ -58,7 +186,7 @@ const OrderPrint = () => {
             if (file.type === 'application/pdf') {
                 try {
                     const arrayBuffer = await file.arrayBuffer();
-                    const loadingTask = pdfjsLib.getDocument({data: arrayBuffer});
+                    const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
                     const pdfDoc = await loadingTask.promise;
                     TotalPageCount += pdfDoc.numPages;
                 } catch (error) {
@@ -67,7 +195,7 @@ const OrderPrint = () => {
             } else if (file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || file.type === 'application/msword') {
                 try {
                     const arrayBuffer = await file.arrayBuffer();
-                    const result = await mammoth.extractRawText({arrayBuffer});
+                    const result = await mammoth.extractRawText({ arrayBuffer });
                     const wordCount = result.value.split(/\s+/).length;
                     const estimatedPages = Math.ceil(wordCount / 500); // Assuming 500 words per page
                     TotalPageCount += estimatedPages;
@@ -138,6 +266,7 @@ const OrderPrint = () => {
     return (
         <div
             className="flex-[2_1_60%] border rounded-xl border-gray-300 flex flex-col items-start justify-start p-3 relative">
+            {loading && <Loader />}
             <div className="mt-5 mb-5 ml-5">
                 <h2 className='text-left text-2xl font-poppins_bold'>
                     Đặt in
@@ -150,9 +279,9 @@ const OrderPrint = () => {
                     <div className="w-full flex items-center mb-3">
                         <label htmlFor="printer" className="w-1/3">Địa điểm:</label>
                         <select
-                            className={`w-2/3 border border-gray-300 py-2 px-1 rounded-md ${
+                            className={`w-2/3 py-2 px-1 rounded-md ${
                                 location === '' ? 'text-gray-400' : 'text-black'
-                            }`}
+                            } custom-select`}
                             value={location}
                             onChange={handleLocationChange}
                         >
@@ -215,13 +344,11 @@ const OrderPrint = () => {
                     <div className="w-full flex items-center mb-3">
                         <label htmlFor="printer" className="w-1/3">Khổ giấy:</label>
                         <select
-                            className={`w-2/3 border border-gray-300 py-2 px-1 rounded-md ${
-                                paperSize === '' ? 'text-gray-400' : 'text-black'
-                            }`}
+                            className={`w-2/3 py-2 px-1 rounded-md ${paperSize === '' ? 'text-gray-400' : 'text-black'} custom-select`}
                             value={paperSize}
                             onChange={handlePaperSizeChange}
                         >
-                            <option value="" className="ml-1" disabled hidden>
+                            <option value="" disabled hidden>
                                 Chọn khổ giấy
                             </option>
                             <option value="a3" className="text-black">A3</option>
@@ -240,10 +367,14 @@ const OrderPrint = () => {
                             onChange={handleCopiesChange}
                         />
                     </div>
-                    <div className="w-full flex items-center mb-3">
-                        <span className="w-1/3"></span>
-                        <span className="w-2/3 text-sm text-gray-400">Số giấy còn lại: 0</span>
-                    </div>
+                    {paperSize && (
+                        <div className="w-full flex items-center mb-3">
+                            <span className="w-1/3"></span>
+                            <span className="w-2/3 text-sm text-gray-400">
+                                Số giấy {paperSize.toUpperCase()} còn lại: {userPaperCount} tờ
+                            </span>
+                        </div>
+                    )}
                 </div>
 
                 {/* Right Column */}
@@ -252,15 +383,15 @@ const OrderPrint = () => {
                         <label htmlFor="printer" className="w-1/3">Email:</label>
                         <div
                             className="w-2/3 border border-gray-300 py-2 px-2 rounded-md overflow-hidden text-ellipsis whitespace-nowrap">
-                                {user?.email}
+                            {user?.email}
                         </div>
                     </div>
                     <div className="w-full flex items-center mb-3">
                         <label htmlFor="printer" className="w-1/3">Máy in:</label>
                         <select
-                            className={`w-2/3 border border-gray-300 py-2 px-1 rounded-md ${
+                            className={`w-2/3 py-2 px-1 rounded-md ${
                                 printer === '' ? 'text-gray-400' : 'text-black'
-                            }`}
+                            } custom-select`}
                             value={printer}
                             onChange={handlePrinterChange}
                         >
@@ -273,9 +404,9 @@ const OrderPrint = () => {
                     <div className="w-full flex items-center mb-3">
                         <label htmlFor="printer" className="w-1/3">Số mặt:</label>
                         <select
-                            className={`w-2/3 border border-gray-300 py-2 px-1 rounded-md ${
+                            className={`w-2/3 py-2 px-1 rounded-md ${
                                 sides === '' ? 'text-gray-400' : 'text-black'
-                            }`}
+                            } custom-select`}
                             value={sides}
                             onChange={handleSidesChange}
                         >
@@ -290,7 +421,7 @@ const OrderPrint = () => {
             {/* Drag-and-Drop Box */}
             <div className="flex-grow flex w-full">
                 <button
-                    className={`flex-grow flex rounded-md border bg-gray-50 ${dragging ? 'border-blue-500' : 'border-dashed border-gray-300'} p-5  mt-3 mb-5 ml-5 mr-5 items-center justify-center text-gray-400`}
+                    className={`flex-grow flex rounded-md border bg-gray-50 ${dragging ? 'border-[#1488D8]' : 'border-dashed border-gray-300'} p-5  mt-3 mb-5 ml-5 mr-5 items-center justify-center text-gray-400`}
                     onDragOver={handleDragOver}
                     onDragEnter={handleDragEnter}
                     onDragLeave={handleDragLeave}
@@ -302,7 +433,7 @@ const OrderPrint = () => {
                     <input
                         type="file"
                         ref={fileInputRef}
-                        style={{display: 'none'}}
+                        style={{ display: 'none' }}
                         accept=".pdf, .docx, .doc"
                         multiple
                         onChange={handleFileChange}
@@ -312,18 +443,22 @@ const OrderPrint = () => {
                             <li key={fileName} className="text-black flex items-center">
                                 <span className="mr-2">•</span>
                                 <span>{fileName}</span>
+                                {uploadProgress[fileName] !== undefined && (
+                                    <span className="ml-2 text-gray-500">
+                                        {uploadProgress[fileName].toFixed(2)}%
+                                    </span>
+                                )}
                             </li>
                         ))}
                     </ul>
                 </button>
             </div>
 
-
-            {/* Total Pages and Total Pr    ice */}
-            <class className="w-full flex">
+            {/* Total Pages and Total Price */}
+            <div className="w-full flex">
                 <div className='w-1/2 flex flex-col ml-5'>
                     <p className='text-gray-400 text-sm'>Tổng trang: {totalPages}</p>
-                    <span className='text-black font-poppins_bold'>Tổng giá: {totalPrice} VND</span>
+                    <span className='font-poppins_bold'>Tổng giá: {totalPrice} VND</span>
                 </div>
 
                 {/* Submit Button */}
@@ -331,12 +466,13 @@ const OrderPrint = () => {
                     <input
                         type="submit"
                         value="Đặt in"
+                        onClick={sendPrintOrderFunction}
                         className='text-white bg-black hover:bg-[#1488D8] hover:scale-105 py-2 px-4 font-poppins_bold rounded-full mt-2 transition-transform duration-300'
                     />
                 </div>
-            </class>
+            </div>
         </div>
     );
 }
 
-export default OrderPrint
+export default OrderPrint;
