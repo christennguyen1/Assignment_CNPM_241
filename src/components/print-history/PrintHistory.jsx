@@ -31,13 +31,13 @@ const PrintHistory = () => {
 
     return (
         <div className="relative">
-            <div className="sticky rounded-t-xl top-0 py-5 px-8 bg-white z-5 shadow">
+            <div className="sticky rounded-t-xl top-0 py-5 px-10 bg-white z-5 shadow">
                 <h2 className="text-xl font-poppins_bold">Lịch sử in</h2>
             </div>
             <ul className="list-none overflow-y-auto h-[calc(100vh-8rem)] w-full">
                 {printHistory.map((order) => (
                     <li key={order.id}
-                        className={`py-2 px-2 border-b border-gray-200 flex items-center w-full justify-between`}>
+                        className={`py-2 px-4 border-b border-gray-250 flex items-center w-full justify-between`}>
                         <div className="w-2/3 flex-col ml-6">
                             <div className='flex'>Thời gian: <p
                                 className='font-poppins_semibold ml-1'>{order.createdAt.toDate().toLocaleString('vi-VN', {hour12: false})}</p>
@@ -53,7 +53,7 @@ const PrintHistory = () => {
                             <div className='flex'>Tổng giá: <p className='font-poppins_semibold ml-1'>{order.totalPrice} VND</p>
                             </div>
                         </div>
-                        <div className='flex flex-col items-center mb-2 mr-5 justify-center'>
+                        <div className='flex flex-col items-center mb-2 mr-3 justify-center'>
                             <p className="whitespace-nowrap font-poppins_bold p-1 w-16 text-center">{statusMap[order.status]?.text || order.status}</p>
                             {statusMap[order.status] &&
                                 <img src={statusMap[order.status].icon} alt={order.status} className='w-8 h-8'/>}
