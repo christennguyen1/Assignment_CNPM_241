@@ -70,7 +70,6 @@ const OrderPrint = () => {
         return new Promise((resolve, reject) => {
             if (!file) {
                 console.error('File is undefined');
-                reject('File is undefined');
                 return;
             }
             try {
@@ -84,7 +83,6 @@ const OrderPrint = () => {
                 );
             } catch (error) {
                 console.error('Error uploading file:', error);
-                reject(error);
             }
         });
     }, [user.uid]);
