@@ -2,9 +2,12 @@
 
 Dự án được làm bằng ReactJs + Vite + TailwindCSS + Firebase
 
+
 File web project được để ở branch frontend_v2
 
 # Installation
+
+You need to install Vite to run this project.
 
 To run this code type the followings:
 
