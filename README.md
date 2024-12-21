@@ -12,5 +12,7 @@ git clone -b frontend-v2 https://github.com/christennguyen1/Assignment_CNPM_241.
 
 npm install
 
+npm run dev
+
 # Running
 Run app.js in src directory.
