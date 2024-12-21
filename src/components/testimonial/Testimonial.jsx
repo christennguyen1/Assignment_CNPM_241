@@ -7,10 +7,10 @@ const Testimonial = () => {
                 {/* main  */}
                 <div className="container px-5 py-10 mx-auto">
                     {/* Heading  */}
-                    <h1 className=' text-center text-3xl font-bold'>Đội ngũ phát triển: <span
+                    <h1 className=' text-center text-3xl font-poppins_semibold'>Đội ngũ phát triển: <span
                         style={{color: '#1488D8'}}>Trai lầu xanh</span></h1>
                     {/* para  */}
-                    <h2 className=' text-center text-2xl font-semibold mb-10'>Thành viên nhóm:</h2>
+                    <h2 className=' text-center text-2xl font-poppins_semibold mb-10'>Thành viên nhóm:</h2>
 
                     <div className="flex flex-wrap -m-4">
                         {/* Testimonial 1 */}
@@ -110,7 +110,7 @@ const Testimonial = () => {
                         <div
                             className="order-2 hover:shadow-xl hover:shadow-gray-200 bg-gray-100 shadow-[inset_0_0_2px_rgba(0,0,0,0.6)] px-4 py-6 rounded-lg">
                             <div className="flex items-center justify-center whitespace-nowrap">
-                                <p className='font-bold text-center text-xl'>
+                                <p className='font-poppins_bold text-center text-xl'>
                                     Logo nhận dạng máy in thuộc hệ thống
                                 </p>
                                 <img className="ml-6 w-65 h-12 object-cover rounded"

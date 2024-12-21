@@ -147,18 +147,19 @@ const PrintManage = () => {
                     {printHistory.map((order) => (
                         <li key={order.id} className="col-span-12 grid grid-cols-12 gap-4 py-2 px-4 border-b border-gray-250">
                             <span className="col-span-0.5 flex justify-center items-start">
-                                <button
-                                    className="w-6 h-6 cursor-pointer"
-                                    onClick={(e) => handleInfoClick(order, e)}
-                                    onKeyDown={(e) => {
-                                        if (e.key === 'Enter' || e.key === ' ') {
-                                            handleInfoClick(order, e);
-                                        }
-                                    }}
-                                >
-                                    <img src={info} alt="info icon" className="w-6 h-6"/>
-                                </button>
-                            </span>
+    <img
+        src={info}
+        alt="info icon"
+        className="w-6 h-6 cursor-pointer"
+        tabIndex="0"
+        onClick={(e) => handleInfoClick(order, e)}
+        onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                handleInfoClick(order, e);
+            }
+        }}
+    />
+</span>
                             <span
                                 className="col-span-1.5">{order.createdAt.toDate().toLocaleString('vi-VN', {hour12: false})}</span>
                             <span className="col-span-1.5 text-center items-start">{order.size.toUpperCase()}</span>

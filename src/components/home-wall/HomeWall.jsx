@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router";
-import HCMUT from "../../assets/HCMUT.jpg";
+import wallpaper from "../../assets/home_wallpaper.jpg";
 
 const HomeWall = () => {
     const user = JSON.parse(localStorage.getItem('users'));
@@ -15,8 +15,8 @@ const HomeWall = () => {
 
     return (
         <div className="relative z-0 w-full h-screen">
-            <img className="absolute top-0 left-0 w-full h-full object-cover" src={HCMUT} alt="" />
-            <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50"></div>
+            <img className="absolute top-0 left-0 w-full h-full object-cover" src={wallpaper} alt="" />
+            <div className="absolute top-0 left-0 w-full h-full bg-black opacity-60"></div>
             <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center space-y-4">
                 <h1 className="text-white mt-10 text-6xl font-poppins_bold">HCMUT - SSPS</h1>
                 <p className="text-white text-center pt-12 px-4 max-w-2xl">

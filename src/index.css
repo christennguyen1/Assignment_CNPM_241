@@ -151,3 +151,19 @@ select {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+.navbar-home {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 10;
+    background-color: transparent;
+    color: white;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.navbar-home:hover {
+    background-color: white;
+    color: black;
+}

@@ -45,7 +45,7 @@ const PrintHistory = () => {
                                 className='font-poppins_semibold ml-1'>{order.createdAt.toDate().toLocaleString('vi-VN', {hour12: false})}</p>
                             </div>
                             <div className='flex'>Đã sử dụng: <p
-                                className='font-poppins_semibold ml-1'>{order.totalPages} trang {order.size.toUpperCase()}</p>
+                                className='font-poppins_semibold ml-1'>{order.totalPages} trang {order.paperSize.toUpperCase()}</p>
                             </div>
                             <div className='flex'>Địa điểm:
                                 <p className='font-poppins_semibold ml-1'>

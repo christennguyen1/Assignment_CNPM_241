@@ -1,7 +1,7 @@
-import Layout from "../../components/layout/Layout";
-import Logo from "../../assets/avatar.jpg";
+import Layout from "../components/layout/Layout.jsx";
+import Logo from "../assets/avatar.jpg";
 
-const UserDashboard = () => {
+const Dashboard = () => {
     // user
     const user = JSON.parse(localStorage.getItem('users'));
 
@@ -28,22 +28,22 @@ const UserDashboard = () => {
                             <img className="w-52 h-52 rounded-full" src={Logo} alt="img"/>
                         </div>
                         {/* text  */}
-                        <div className="mt-8 flex justify-center">
-                            <div className="grid grid-cols-2 gap-x-0 gap-y-4 text-left">
+                        <div className="items-center flex flex-col pt-5">
+                            <div className="grid grid-cols-2 gap-x-0 gap-y-4 ml-14 text-left">
                                 {/* Name  */}
-                                <span className="font-bold">Họ tên:</span>
+                                <span className="font-poppins_semibold">Họ tên:</span>
                                 <span>{user?.name}</span>
 
                                 {/* Email  */}
-                                <span className="font-bold">Email:</span>
+                                <span className="font-poppins_semibold">Email:</span>
                                 <span>{user?.email}</span>
 
                                 {/* Date  */}
-                                <span className="font-bold">Ngày:</span>
+                                <span className="font-poppins_semibold">Ngày:</span>
                                 <span>{new Date(user?.date).toLocaleDateString('vi-VN')}</span>
 
                                 {/* Role  */}
-                                <span className="font-bold">Vai trò:</span>
+                                <span className="font-poppins_semibold">Vai trò:</span>
                                 <span>{getRoleDisplayName(user?.role)}</span>
                             </div>
                         </div>
@@ -54,4 +54,4 @@ const UserDashboard = () => {
     );
 }
 
-export default UserDashboard;
+export default Dashboard;

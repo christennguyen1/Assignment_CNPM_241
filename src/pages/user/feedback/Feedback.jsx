@@ -6,9 +6,9 @@ import toast from "react-hot-toast";
 import Loader from "../../../components/loader/Loader.jsx";
 import { collection, addDoc } from "firebase/firestore";
 import { fireDB } from "../../../firebase/FirebaseConfig.jsx";
-import HCMUT from "../../../assets/HCMUT.png";
+import HCMUT from "../../../assets/feedback_wallpaper.png";
 
-const ErrorReport = () => {
+const Feedback = () => {
     const context = useContext(myContext);
     const { loading, setLoading } = context;
 
@@ -21,7 +21,7 @@ const ErrorReport = () => {
         description: ""
     });
 
-    const sendReportFunction = useCallback(async () => {
+    const sendFeedbackFunction = useCallback(async () => {
         // validation
         if (report.title === "" || report.description === "") {
             toast.error("Tất cả các trường là bắt buộc");
@@ -63,7 +63,7 @@ const ErrorReport = () => {
             if (event.key === 'Escape') {
                 handleCancel();
             } else if (event.key === 'Enter') {
-                sendReportFunction().catch(error => console.error(error));
+                sendFeedbackFunction().catch(error => console.error(error));
             }
         };
 
@@ -71,7 +71,7 @@ const ErrorReport = () => {
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
         };
-    }, [handleCancel, sendReportFunction, report]);
+    }, [handleCancel, sendFeedbackFunction, report]);
 
     return (
         <div className="relative">
@@ -95,10 +95,10 @@ const ErrorReport = () => {
 
                 {/* Report Form */}
                 <form
-                    className="login_Form bg-white p-6 rounded-lg shadow-lg w-full max-w-5xl h-3/5 -mt-20 flex flex-col"
+                    className="login_Form bg-white p-6 rounded-lg shadow-lg w-full max-w-5xl h-4/5 flex flex-col"
                     onSubmit={(e) => {
                         e.preventDefault();
-                        sendReportFunction().catch(error => console.error(error));
+                        sendFeedbackFunction().catch(error => console.error(error));
                     }}
                 >
                     {/* Top Heading */}
@@ -170,4 +170,4 @@ const ErrorReport = () => {
     );
 };
 
-export default ErrorReport;
+export default Feedback;

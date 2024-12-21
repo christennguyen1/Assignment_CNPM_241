@@ -8,17 +8,22 @@ import NoPage from "./pages/noPage/NoPage";
 import ScrollTop from "./components/scrollTop/ScrollTop";
 import PrintRequest from "./pages/user/print-request/PrintRequest.jsx";
 import AboutUs from  "./pages/about-us/AboutUs.jsx";
-import ErrorReport from "./pages/user/error-report/ErrorReport.jsx";
+import Feedback from "./pages/user/feedback/Feedback.jsx";
 import PrintManage from "./pages/admin/print-manage/PrintManage.jsx";
 import ErrorManage from "./pages/admin/error-manage/ErrorManage.jsx";
 import Signup from "./pages/registration/Signup";
 import Login from "./pages/registration/Login";
-import UserDashboard from "./pages/user/UserDashboard";
-import AdminDashboard from "./pages/admin/AdminDashboard";
+import Dashboard from "./pages/Dashboard.jsx";
 import MyState from "./context/myState";
 import { Toaster } from "react-hot-toast";
+import { ProtectedRoute } from "./protectedRoute/ProtectedRoute";
 import { ProtectedRouteForUser } from "./protectedRoute/ProtectedRouteForUser";
 import { ProtectedRouteForAdmin } from "./protectedRoute/ProtectedRouteForAdmin";
+
+const Logout = () => {
+  localStorage.clear('users');
+  return <Login />;
+};
 
 const App = () => {
   return (
@@ -34,9 +39,9 @@ const App = () => {
               <PrintRequest />
             </ProtectedRouteForUser>
           } />
-          <Route path="/error-report" element={
+          <Route path="/feedback" element={
             <ProtectedRouteForUser>
-              <ErrorReport/>
+              <Feedback/>
             </ProtectedRouteForUser>
           } />
           <Route path="/print-manage" element={
@@ -51,15 +56,11 @@ const App = () => {
           } />
           <Route path="/sign-up" element={<Signup />} />
           <Route path="/log-in" element={<Login />} />
-          <Route path="/user-dashboard" element={
-            <ProtectedRouteForUser>
-              <UserDashboard/>
-            </ProtectedRouteForUser>
-          } />
-          <Route path="/admin-dashboard" element={
-            <ProtectedRouteForAdmin>
-              <AdminDashboard/>
-            </ProtectedRouteForAdmin>
+          <Route path="/log-out" element={<Logout />} />
+          <Route path="/dashboard" element={
+            <ProtectedRoute>
+              <Dashboard/>
+            </ProtectedRoute>
           } />
         </Routes>
         <Toaster/>
