@@ -1,394 +1,129 @@
-import { useContext, useEffect, useState, useCallback, useRef } from "react";
-import { collection, getDocs, query, setDoc, doc, where, deleteDoc, updateDoc } from "firebase/firestore";
-import { fireDB } from "../../../firebase/FirebaseConfig.jsx";
-import Layout from "../../../components/layout/Layout";
-import Loader from "../../../components/loader/Loader.jsx";
-import myContext from "../../../context/myContext.jsx";
-import toast from "react-hot-toast";
-import info from "../../../assets/info.svg";
-import up from "../../../assets/up.svg";
-import down from "../../../assets/down.svg";
-import trash from "../../../assets/trash.svg";
+/* eslint-disable react/no-unescaped-entities */
 
-const PrinterManage = () => {
-    const context = useContext(myContext);
-    const { loading, setLoading } = context;
-
-    const [printerList, setPrinterList] = useState([]);
-    const [filteredPrinterList, setFilteredPrinterList] = useState([]);
-    const [selectedPrinter, setSelectedPrinter] = useState(null);
-    const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
-    const [filter, setFilter] = useState('all');
-    const [searchInput, setSearchInput] = useState('');
-    const [sortConfig, setSortConfig] = useState({ key: 'name', direction: 'asc' });
-    const [showAddForm, setShowAddForm] = useState(false);
-    const [newPrinter, setNewPrinter] = useState({ name: '', pid: '', place: '', working: true });
-    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-    const [printerToDelete, setPrinterToDelete] = useState(null);
-    const popupRef = useRef(null);
-    const addButtonRef = useRef(null);
-
-    const fetchPrinterList = useCallback(async () => {
-        setLoading(true);
-        try {
-            const q = query(collection(fireDB, 'printer'));
-            const querySnapshot = await getDocs(q);
-            const printers = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            setPrinterList(printers);
-            setFilteredPrinterList(printers);
-        } catch (error) {
-            console.error('Error fetching printer list:', error);
-        } finally {
-            setLoading(false);
-        }
-    }, [setLoading]);
-
-    useEffect(() => {
-        void fetchPrinterList();
-    }, [fetchPrinterList]);
-
-    useEffect(() => {
-        let filtered = printerList;
-        if (filter === 'working') {
-            filtered = filtered.filter(printer => printer.working);
-        } else if (filter === 'not-working') {
-            filtered = filtered.filter(printer => !printer.working);
-        }
-        if (searchInput) {
-            const lowerCaseSearchInput = searchInput.toLowerCase();
-            filtered = filtered.filter(printer =>
-                printer.name.toLowerCase().includes(lowerCaseSearchInput) ||
-                printer.pid.toLowerCase().includes(lowerCaseSearchInput) ||
-                printer.place.toLowerCase().includes(lowerCaseSearchInput) ||
-                (printer.working && 'đang hoạt động'.includes(lowerCaseSearchInput)) ||
-                (!printer.working && 'không hoạt động'.includes(lowerCaseSearchInput))
-            );
-        }
-        setFilteredPrinterList(filtered);
-    }, [filter, searchInput, printerList]);
-
-    const handleInfoClick = (printer, event) => {
-        const rect = event.target.getBoundingClientRect();
-        setPopupPosition({ top: rect.top + window.scrollY, left: rect.right + window.scrollX });
-        setSelectedPrinter(printer);
-    };
-
-    const closeModal = () => {
-        setSelectedPrinter(null);
-    };
-
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (popupRef.current && !popupRef.current.contains(event.target)) {
-                closeModal();
-            }
-        };
-
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, [popupRef]);
-
-    const toggleFilter = (newFilter) => {
-        setFilter((prevFilter) => (prevFilter === newFilter ? 'all' : newFilter));
-    };
-
-    const handleSort = (key) => {
-        let direction = 'asc';
-        if (sortConfig.key === key && sortConfig.direction === 'asc') {
-            direction = 'desc';
-        }
-        setSortConfig({ key, direction });
-    };
-
-    const sortedPrinterList = [...filteredPrinterList].sort((a, b) => {
-        if (a[sortConfig.key] < b[sortConfig.key]) {
-            return sortConfig.direction === 'asc' ? -1 : 1;
-        }
-        if (a[sortConfig.key] > b[sortConfig.key]) {
-            return sortConfig.direction === 'asc' ? 1 : -1;
-        }
-        return 0;
-    });
-
-    const getSortArrow = (key) => {
-        if (sortConfig.key === key) {
-            return sortConfig.direction === 'asc' ? <img src={up} alt="up arrow" className="inline w-3 h-3 ml-1" /> : <img src={down} alt="down arrow" className="inline w-3 h-3 ml-1" />;
-        }
-        return null;
-    };
-
-    const handleAddPrinter = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        try {
-            const q = query(collection(fireDB, 'printer'), where('pid', '==', newPrinter.pid));
-            const querySnapshot = await getDocs(q);
-            if (!querySnapshot.empty) {
-                toast.error('PID already exists. Please use a different PID.');
-                setLoading(false);
-                return;
-            }
-
-            await setDoc(doc(fireDB, 'printer', newPrinter.pid), newPrinter);
-            setNewPrinter({ name: '', pid: '', place: '', working: true });
-            setShowAddForm(false);
-            await fetchPrinterList();
-            toast.success('Printer added successfully!');
-        } catch (error) {
-            console.error('Error adding printer:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleDeletePrinter = async (id) => {
-        setLoading(true);
-        try {
-            await deleteDoc(doc(fireDB, 'printer', id));
-            await fetchPrinterList();
-            toast.success('Printer deleted successfully!');
-        } catch (error) {
-            console.error('Error deleting printer:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleToggleWorking = async (id, currentStatus) => {
-        setLoading(true);
-        try {
-            await updateDoc(doc(fireDB, 'printer', id), { working: !currentStatus });
-            await fetchPrinterList();
-            toast.success('Printer status updated successfully!');
-        } catch (error) {
-            console.error('Error updating printer status:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const confirmDeletePrinter = (id) => {
-        setPrinterToDelete(id);
-        setShowDeleteConfirm(true);
-    };
-
-    const handleConfirmDelete = async () => {
-        if (printerToDelete) {
-            await handleDeletePrinter(printerToDelete);
-            setShowDeleteConfirm(false);
-            setPrinterToDelete(null);
-        }
-    };
-
-    const handleCancelDelete = () => {
-        setShowDeleteConfirm(false);
-        setPrinterToDelete(null);
-    };
-
-    useEffect(() => {
-        if (showAddForm && addButtonRef.current) {
-            const rect = addButtonRef.current.getBoundingClientRect();
-            setPopupPosition({ top: rect.bottom + window.scrollY, left: rect.left + window.scrollX });
-        }
-    }, [showAddForm]);
-
+const Testimonial = () => {
     return (
-        <Layout>
-            <div className="relative">
-                {loading && <Loader />}
-                <div className="rounded-t-xl top-0 py-5 px-10 bg-white z-5">
-                    <h2 className="text-2xl font-poppins_bold">Quản lý máy in</h2>
-                    <div className="flex space-x-4 mt-4 justify-between">
-                        <div className="flex space-x-4">
-                            <button
-                                onClick={() => toggleFilter('working')}
-                                className={`py-2 px-4 rounded-full ${filter === 'working' ? 'bg-green-100 text-green-500' : 'bg-gray-200 text-gray-800'}`}
-                            >
-                                Đang hoạt động
-                            </button>
-                            <button
-                                onClick={() => toggleFilter('not-working')}
-                                className={`py-2 px-4 rounded-full ${filter === 'not-working' ? 'bg-red-100 text-red-500' : 'bg-gray-200 text-gray-800'}`}
-                            >
-                                Không hoạt động
-                            </button>
-                        </div>
-                        <input
-                            type="text"
-                            value={searchInput}
-                            onChange={(e) => setSearchInput(e.target.value)}
-                            placeholder="Tìm kiếm để lọc dữ liệu..."
-                            className="py-2 pl-4 pr-10 rounded-full border border-gray-300"
-                        />
-                        <button
-                            ref={addButtonRef}
-                            onClick={() => setShowAddForm(true)}
-                            className="py-2 px-4 rounded-full font-poppins_bold bg-black text-white"
-                        >
-                            Thêm máy in
-                        </button>
-                    </div>
-                </div>
-                {showAddForm && (
-                    <div className="absolute bg-white p-4 border-gray-500 rounded shadow"
-                         style={{ top: popupPosition.top, left: popupPosition.left }}>
-                        <h3 className="text-xl font-poppins_bold mb-4">Thêm máy in mới</h3>
-                        <form onSubmit={handleAddPrinter}>
-                            <div className="mb-4">
-                                <label className="block text-gray-700">Tên máy in</label>
-                                <input
-                                    type="text"
-                                    value={newPrinter.name}
-                                    onChange={(e) => setNewPrinter({ ...newPrinter, name: e.target.value })}
-                                    className="w-full px-3 py-2 border rounded"
-                                    required
-                                />
-                            </div>
-                            <div className="mb-4">
-                                <label className="block text-gray-700">PID</label>
-                                <input
-                                    type="text"
-                                    value={newPrinter.pid}
-                                    onChange={(e) => setNewPrinter({ ...newPrinter, pid: e.target.value })}
-                                    className="w-full px-3 py-2 border rounded"
-                                    required
-                                />
-                            </div>
-                            <div className="mb-4">
-                                <label className="block text-gray-700">Vị trí</label>
-                                <select
-                                    value={newPrinter.place}
-                                    onChange={(e) => setNewPrinter({ ...newPrinter, place: e.target.value })}
-                                    className="w-full px-3 py-2 border rounded"
-                                    required
-                                >
-                                    <option value="b1-ltk" className="text-black">B1 BK-LTK</option>
-                                    <option value="b2-ltk" className="text-black">B2 BK-LTK</option>
-                                    <option value="b3-ltk" className="text-black">B3 BK-LTK</option>
-                                    <option value="b4-ltk" className="text-black">B4 BK-LTK</option>
-                                    <option value="b5-ltk" className="text-black">B5 BK-LTK</option>
-                                    <option value="b6-ltk" className="text-black">B6 BK-LTK</option>
-                                    <option value="h1-dan" className="text-black">H1 BK-DAn</option>
-                                    <option value="h2-dan" className="text-black">H2 BK-DAn</option>
-                                    <option value="h3-dan" className="text-black">H3 BK-DAn</option>
-                                    <option value="h4-dan" className="text-black">H6 BK-DAn</option>
-                                </select>
-                            </div>
-                            <div className="mb-4">
-                                <label className="block text-gray-700">Trạng thái</label>
-                                <select
-                                    value={newPrinter.working}
-                                    onChange={(e) => setNewPrinter({ ...newPrinter, working: e.target.value === 'true' })}
-                                    className="w-full px-3 py-2 border rounded"
-                                    required
-                                >
-                                    <option value="true">Đang hoạt động</option>
-                                    <option value="false">Không hoạt động</option>
-                                </select>
-                            </div>
-                            <div className="flex justify-end">
-                                <button
-                                    type="button"
-                                    onClick={() => setShowAddForm(false)}
-                                    className="py-2 px-4 rounded-full bg-gray-500 hover:bg-[#1488D8] text-white mr-2"
-                                >
-                                    Hủy
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="py-2 px-4 rounded-full hover:bg-[#1488D8] bg-black text-white"
-                                >
-                                    Thêm
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                )}
-                <div className="border border-gray-300 rounded-2xl mx-10 mb-5">
-                    <ul className="overflow-y-auto w-full">
-                        <li className="col-span-24 grid grid-cols-24 gap-3 p-5 border-b border-gray-250 font-poppins_bold">
-                            <span className="col-span-1"></span>
-                            <span className="col-span-9 cursor-pointer select-none"
-                                  onClick={() => handleSort('name')}>Tên máy in {getSortArrow('name')}</span>
-                            <span className="col-span-7 text-center cursor-pointer select-none"
-                                  onClick={() => handleSort('place')}>Vị trí {getSortArrow('place')}</span>
-                            <span className="col-span-6 text-center cursor-pointer select-none"
-                                  onClick={() => handleSort('working')}>Trạng thái {getSortArrow('working')}</span>
-                            <span className="col-span-1 text-center">Xóa</span>
-                        </li>
-                        {sortedPrinterList.map((printer) => (
-                            <li key={printer.id}
-                                className="col-span-24 grid grid-cols-24 gap-4 py-2 pb-5 px-4 border-b border-gray-250">
-                                <span className="col-span-1 flex justify-center">
-                                    <button
-                                        className="w-6 h-6 cursor-pointer"
-                                        onClick={(e) => handleInfoClick(printer, e)}
-                                        onKeyDown={(e) => {
-                                            if (e.key === 'Enter' || e.key === ' ') {
-                                                handleInfoClick(printer, e);
-                                            }
-                                        }}
-                                    >
-                                        <img src={info} alt="info icon" className="w-6 h-6"/>
-                                    </button>
-                                </span>
-                                <span className="col-span-9">{printer.name}</span>
-                                <span className="col-span-7 text-center">{printer.place.toUpperCase()}</span>
-                                <span className="col-span-6 text-center inline-flex items-center justify-center">
-                                   <span
-                                       className={`inline-block font-poppins_bold px-2 py-1 rounded-full ${printer.working ? 'bg-green-100 text-green-500' : 'bg-red-100 text-red-500'}`}
-                                       onClick={() => handleToggleWorking(printer.id, printer.working)}
-                                       draggable="false"
-                                       style={{cursor: 'pointer'}}
-                                   >
-                                        {printer.working ? 'Đang hoạt động' : 'Không hoạt động'}
-                                    </span>
-                                </span>
-                                <span className="col-span-1 flex justify-center items-center">
-                                    <button
-                                        className="w-6 h-6 cursor-pointer"
-                                        onClick={() => confirmDeletePrinter(printer.id)}
-                                    >
-                                        <img src={trash} alt="delete icon" className="w-6 h-6"/>
-                                    </button>
-                                </span>
-                            </li>
-                        ))}
-                    </ul>
-                    {selectedPrinter && (
-                        <div ref={popupRef} className="absolute bg-white p-4 border-gray-500 rounded shadow"
-                             style={{top: popupPosition.top - 55, left: popupPosition.left}}>
-                            <p className=""><strong>Printer ID:</strong> {selectedPrinter.pid}</p>
-                        </div>
-                    )}
-                    {showDeleteConfirm && (
-                        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                            <div className="bg-white p-6 rounded shadow-lg">
-                                <h3 className="text-xl font-poppins_bold mb-4">Xác nhận xóa</h3>
-                                <p>Bạn có chắc chắn muốn xóa máy in này không?</p>
-                                <div className="flex justify-end mt-4">
-                                    <button
-                                        onClick={handleCancelDelete}
-                                        className="py-2 px-4 rounded-full bg-gray-500 hover:bg-[#1488D8] text-white mr-2"
-                                    >
-                                        Hủy
-                                    </button>
-                                    <button
-                                        onClick={handleConfirmDelete}
-                                        className="py-2 px-4 rounded-full bg-red-500 hover:bg-red-700 text-white"
-                                    >
-                                        Xóa
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                </div>
-            </div>
-        </Layout>
-    );
-};
+        <div>
+            <section className="body-font mb-10">
+                {/* main  */}
+                <div className="container px-5 py-10 mx-auto">
+                    {/* Heading  */}
+                    <h1 className=' text-center text-3xl font-poppins_semibold'>Đội ngũ phát triển: <span
+                        style={{color: '#1488D8'}}>Trai lầu xanh</span></h1>
+                    {/* para  */}
+                    <h2 className=' text-center text-2xl font-poppins_semibold mb-10'>Thành viên nhóm:</h2>
 
-export default PrinterManage;
+                    <div className="flex flex-wrap -m-4">
+                        {/* Testimonial 1 */}
+                        <div className="p-4 md:w-1/3 sm:w-1/2 w-full">
+                            <div className="h-full text-center">
+                                <img alt="testimonial"
+                                     className="w-20 h-20 object-cover object-center rounded-full inline-block bg-gray-100"
+                                     src="https://u.cubeupload.com/BinhDangCap/Hung.jpg"/>
+                                <div><span className="inline-block h-1 w-10 rounded"
+                                           style={{backgroundColor: '#1488D8'}}/></div>
+                                <h2 className="font-medium title-font tracking-wider text-sm uppercase">Nguyễn
+                                    Minh Hưng</h2>
+                            </div>
+                        </div>
+
+                        {/* Testimonial 2 */}
+                        <div className="p-4 md:w-1/3 sm:w-1/2 w-full">
+                            <div className="h-full text-center">
+                                <img alt="testimonial"
+                                     className="w-20 h-20 object-cover object-center rounded-full inline-block bg-gray-100"
+                                     src="https://u.cubeupload.com/BinhDangCap/BinhDangCap.jpg"/>
+                                <div><span className="inline-block h-1 w-10 rounded"
+                                           style={{backgroundColor: '#1488D8'}}/></div>
+                                <h2 className="font-medium title-font tracking-wider text-sm uppercase">Phan
+                                    Thanh Bình</h2>
+                            </div>
+                        </div>
+
+                        {/* Testimonial 3 */}
+                        <div className="p-4 md:w-1/3 sm:w-1/2 w-full">
+                            <div className="h-full text-center">
+                                <img alt="testimonial"
+                                     className="w-20 h-20 object-cover object-center rounded-full inline-block bg-gray-100"
+                                     src="https://u.cubeupload.com/BinhDangCap/HoanBao.jpg"/>
+                                <div><span className="inline-block h-1 w-10 rounded"
+                                           style={{backgroundColor: '#1488D8'}}/></div>
+                                <h2 className="font-medium title-font tracking-wider text-sm uppercase">Vũ
+                                    Đình Hoàn</h2>
+                            </div>
+                        </div>
+
+                        {/* Testimonial 4 */}
+                        <div className="p-4 md:w-1/4 sm:w-1/2 w-full">
+                            <div className="h-full text-center">
+                                <img alt="testimonial"
+                                     className="w-20 h-20 object-cover object-center rounded-full inline-block bg-gray-100"
+                                     src="https://u.cubeupload.com/BinhDangCap/Quy.jpg"/>
+                                <div><span className="inline-block h-1 w-10 rounded"
+                                           style={{backgroundColor: '#1488D8'}}/></div>
+                                <h2 className="font-medium title-font tracking-wider text-sm uppercase">Đỗ
+                                    Quý</h2>
+                            </div>
+                        </div>
+
+                        {/* Testimonial 5 */}
+                        <div className="p-4 md:w-1/4 sm:w-1/2 w-full">
+                            <div className="h-full text-center">
+                                <img alt="testimonial"
+                                     className="w-20 h-20 object-cover object-center rounded-full inline-block bg-gray-100"
+                                     src="https://u.cubeupload.com/BinhDangCap/Kiet.jpg"/>
+                                <div><span className="inline-block h-1 w-10 rounded"
+                                           style={{backgroundColor: '#1488D8'}}/></div>
+                                <h2 className="font-medium title-font tracking-wider text-sm uppercase">Nguyễn
+                                    Quốc Kiệt</h2>
+                            </div>
+                        </div>
+
+                        {/* Testimonial 6 */}
+                        <div className="p-4 md:w-1/4 sm:w-1/2 w-full">
+                            <div className="h-full text-center">
+                                <img alt="testimonial"
+                                     className="w-20 h-20 object-cover object-center rounded-full inline-block bg-gray-100"
+                                     src="https://u.cubeupload.com/BinhDangCap/HoanBao.jpg"/>
+                                <div><span className="inline-block h-1 w-10 rounded"
+                                           style={{backgroundColor: '#1488D8'}}/></div>
+                                <h2 className="font-medium title-font tracking-wider text-sm uppercase">Nguyễn
+                                    Hữu Bảo</h2>
+                            </div>
+                        </div>
+
+                        {/* Testimonial 7 */}
+                        <div className="p-4 md:w-1/4 sm:w-1/2 w-full">
+                            <div className="h-full text-center">
+                                <img alt="testimonial"
+                                     className="w-20 h-20 object-cover object-center rounded-full inline-block bg-gray-100"
+                                     src="https://u.cubeupload.com/BinhDangCap/Vinh.jpg"/>
+                                <div><span className="inline-block h-1 w-10 rounded"
+                                           style={{backgroundColor: '#1488D8'}}/></div>
+                                <h2 className="font-medium title-font tracking-wider text-sm uppercase">Nguyễn
+                                    Khắc Vinh</h2>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div className="flex justify-center w-full mt-32">
+                        <div
+                            className="order-2 hover:shadow-xl hover:shadow-gray-200 bg-gray-100 shadow-[inset_0_0_2px_rgba(0,0,0,0.6)] px-4 py-6 rounded-lg">
+                            <div className="flex items-center justify-center whitespace-nowrap">
+                                <p className='font-poppins_bold text-center text-xl'>
+                                    Logo nhận dạng máy in thuộc hệ thống
+                                </p>
+                                <img className="ml-6 w-65 h-12 object-cover rounded"
+                                     src="https://u.cubeupload.com/BinhDangCap/TraiLauXanh.png" alt="Trai Lau Xanh"/>
+                                <img className="ml-6 w-12 h-12 object-cover"
+                                     src="https://u.cubeupload.com/BinhDangCap/logo.png" alt="Logo"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    )
+}
+
+export default Testimonial

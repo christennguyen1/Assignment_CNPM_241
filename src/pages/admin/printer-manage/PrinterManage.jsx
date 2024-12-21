@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState, useCallback, useRef } from "react";
-import { collection, getDocs, query, setDoc, doc, where, deleteDoc, updateDoc } from "firebase/firestore";
+import { collection, getDocs, query, setDoc, doc, where, deleteDoc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { fireDB } from "../../../firebase/FirebaseConfig.jsx";
 import Layout from "../../../components/layout/Layout";
 import Loader from "../../../components/loader/Loader.jsx";
@@ -131,7 +131,7 @@ const PrinterManage = () => {
                 return;
             }
 
-            await setDoc(doc(fireDB, 'printer', newPrinter.pid), newPrinter);
+            await setDoc(doc(fireDB, 'printer', newPrinter.pid), { ...newPrinter, createdAt: serverTimestamp() });
             setNewPrinter({ name: '', pid: '', place: '', working: true });
             setShowAddForm(false);
             await fetchPrinterList();
@@ -232,98 +232,111 @@ const PrinterManage = () => {
                     </div>
                 </div>
                 {showAddForm && (
-                    <div className="absolute bg-white p-4 border-gray-500 rounded shadow"
-                         style={{ top: popupPosition.top, left: popupPosition.left }}>
-                        <h3 className="text-xl font-poppins_bold mb-4">Thêm máy in mới</h3>
-                        <form onSubmit={handleAddPrinter}>
-                            <div className="mb-4">
-                                <label htmlFor="printerName" className="block text-gray-700">Tên máy in</label>
-                                <input
-                                    id="printerName"
-                                    type="text"
-                                    value={newPrinter.name}
-                                    onChange={(e) => setNewPrinter({...newPrinter, name: e.target.value})}
-                                    className="w-full px-3 py-2 border rounded"
-                                    required
-                                />
-                            </div>
-                            <div className="mb-4">
-                                <label htmlFor="printerPID" className="block text-gray-700">PID</label>
-                                <input
-                                    id="printerPID"
-                                    type="text"
-                                    value={newPrinter.pid}
-                                    onChange={(e) => setNewPrinter({...newPrinter, pid: e.target.value})}
-                                    className="w-full px-3 py-2 border rounded"
-                                    required
-                                />
-                            </div>
-                            <div className="mb-4">
-                                <label htmlFor="printerPlace" className="block text-gray-700">Vị trí</label>
-                                <select
-                                    id="printerPlace"
-                                    value={newPrinter.place}
-                                    onChange={(e) => setNewPrinter({...newPrinter, place: e.target.value})}
-                                    className="w-full px-3 py-2 border rounded"
-                                    required
-                                >
-                                    <option value="b1-ltk" className="text-black">B1 BK-LTK</option>
-                                    <option value="b2-ltk" className="text-black">B2 BK-LTK</option>
-                                    <option value="b3-ltk" className="text-black">B3 BK-LTK</option>
-                                    <option value="b4-ltk" className="text-black">B4 BK-LTK</option>
-                                    <option value="b5-ltk" className="text-black">B5 BK-LTK</option>
-                                    <option value="b6-ltk" className="text-black">B6 BK-LTK</option>
-                                    <option value="h1-dan" className="text-black">H1 BK-DAn</option>
-                                    <option value="h2-dan" className="text-black">H2 BK-DAn</option>
-                                    <option value="h3-dan" className="text-black">H3 BK-DAn</option>
-                                    <option value="h4-dan" className="text-black">H6 BK-DAn</option>
-                                </select>
-                            </div>
-                            <div className="mb-4">
-                                <label htmlFor="printerStatus" className="block text-gray-700">Trạng thái</label>
-                                <select
-                                    id="printerStatus"
-                                    value={newPrinter.working}
-                                    onChange={(e) => setNewPrinter({...newPrinter, working: e.target.value === 'true'})}
-                                    className="w-full px-3 py-2 border rounded"
-                                    required
-                                >
-                                    <option value="true">Đang hoạt động</option>
-                                    <option value="false">Không hoạt động</option>
-                                </select>
-                            </div>
-                            <div className="flex justify-end">
-                                <button
-                                    type="button"
-                                    onClick={() => setShowAddForm(false)}
-                                    className="py-2 px-4 rounded-full bg-gray-500 hover:bg-[#1488D8] text-white mr-2"
-                                >
-                                    Hủy
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="py-2 px-4 rounded-full hover:bg-[#1488D8] bg-black text-white"
-                                >
-                                    Thêm
-                                </button>
-                            </div>
-                        </form>
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                        <div className="bg-white p-6 border-gray-500 rounded-2xl shadow-lg">
+                            <h3 className="text-xl font-poppins_bold mb-4">Thêm máy in mới</h3>
+                            <form onSubmit={handleAddPrinter}>
+                                <div className="mb-4 flex items-center justify-end">
+                                    <label htmlFor="printerPID" className="block text-gray-700 text-left mr-4 w-32">Mã máy in:</label>
+                                    <input
+                                        id="printerPID"
+                                        type="text"
+                                        value={newPrinter.pid}
+                                        onChange={(e) => setNewPrinter({...newPrinter, pid: e.target.value})}
+                                        className="w-64 px-3 py-2 border rounded-md"
+                                        required
+                                    />
+                                </div>
+                                <div className="mb-4 flex items-center justify-end">
+                                    <label htmlFor="printerName" className="block text-gray-700 text-left mr-4 w-32">Tên máy in:</label>
+                                    <input
+                                        id="printerName"
+                                        type="text"
+                                        value={newPrinter.name}
+                                        onChange={(e) => setNewPrinter({...newPrinter, name: e.target.value})}
+                                        className="w-64 px-3 py-2 border rounded-md"
+                                        required
+                                    />
+                                </div>
+                                <div className="mb-4 flex items-center justify-end">
+                                    <label htmlFor="printerPlace" className="block text-gray-700 text-left mr-4 w-32">Vị trí:</label>
+                                    <select
+                                        id="printerPlace"
+                                        value={newPrinter.place}
+                                        onChange={(e) => setNewPrinter({...newPrinter, place: e.target.value})}
+                                        // className={`w-2/3 py-2 px-1 rounded-md ${
+                                        //     location === '' ? 'text-gray-400' : 'text-black'
+                                        // } custom-select`}
+                                        className={`w-64 px-3 py-2 border rounded-md ${newPrinter.place === '' ? 'text-gray-400' : 'text-black'}`}
+                                        required
+                                    >
+                                        <option value="" disabled hidden>Chọn địa điểm</option>
+                                        <option value="b1-ltk" className="text-black">B1 BK-LTK</option>
+                                        <option value="b2-ltk" className="text-black">B2 BK-LTK</option>
+                                        <option value="b3-ltk" className="text-black">B3 BK-LTK</option>
+                                        <option value="b4-ltk" className="text-black">B4 BK-LTK</option>
+                                        <option value="b5-ltk" className="text-black">B5 BK-LTK</option>
+                                        <option value="b6-ltk" className="text-black">B6 BK-LTK</option>
+                                        <option value="h1-dan" className="text-black">H1 BK-DAn</option>
+                                        <option value="h2-dan" className="text-black">H2 BK-DAn</option>
+                                        <option value="h3-dan" className="text-black">H3 BK-DAn</option>
+                                        <option value="h4-dan" className="text-black">H6 BK-DAn</option>
+                                    </select>
+                                </div>
+                                <div className="mb-4 flex items-center justify-end">
+                                    <label htmlFor="printerStatus" className="block text-gray-700 text-left mr-4 w-32">Trạng thái:</label>
+                                    <select
+                                        id="printerStatus"
+                                        value={newPrinter.working}
+                                        onChange={(e) => setNewPrinter({...newPrinter, working: e.target.value === 'true'})}
+                                        className="w-64 px-3 py-2 border rounded-md"
+                                        required
+                                    >
+                                        <option value="true">Đang hoạt động</option>
+                                        <option value="false">Không hoạt động</option>
+                                    </select>
+                                </div>
+                                <div className="flex justify-end">
+                                    <button
+                                        type="submit"
+                                        className="py-2 px-4 rounded-full hover:bg-[#1488D8] bg-black text-white mr-3"
+                                    >
+                                        Thêm
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowAddForm(false)}
+                                        className="py-2 px-4 rounded-full bg-gray-500 hover:bg-[#1488D8] text-white"
+                                    >
+                                        Hủy
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 )}
                 <div className="border border-gray-300 rounded-2xl mx-10 mb-5">
                     <ul className="overflow-y-auto w-full">
                         <li className="col-span-24 grid grid-cols-24 gap-3 p-5 border-b border-gray-250 font-poppins_bold">
-                            <button className="col-span-9 cursor-pointer select-none text-left"
+                            <span className="col-span-1"></span>
+                            <button className="col-span-2 select-none text-left"
+                                    onClick={() => handleSort('createdAt')}>
+                                Ngày tạo {getSortArrow('createdAt')}
+                            </button>
+                            <button className="col-span-11 select-none text-left"
                                     onClick={() => handleSort('name')}>
                                 Tên máy in {getSortArrow('name')}
                             </button>
-                            <button className="col-span-7 cursor-pointer select-none text-center"
+                            <button className="col-span-6 select-none text-center"
                                     onClick={() => handleSort('place')}>
                                 Vị trí {getSortArrow('place')}
                             </button>
-                            <button className="col-span-6 cursor-pointer select-none text-center"
+                            <button className="col-span-3 select-none text-center"
                                     onClick={() => handleSort('working')}>
-                                Trạng thái {getSortArrow('working')}
+                                Trạng thái {getSortArrow('working') }
+                            </button>
+                            <button className="col-span-1    text-center">
+                                Xóa
                             </button>
                         </li>
                         {sortedPrinterList.map((printer) => (
@@ -342,22 +355,25 @@ const PrinterManage = () => {
                                         <img src={info} alt="info icon" className="w-6 h-6"/>
                                     </button>
                                 </span>
-                                <span className="col-span-9">{printer.name}</span>
-                                <span className="col-span-7 text-center">{printer.place.toUpperCase()}</span>
-                                <span className="col-span-6 text-center inline-flex items-center justify-center">
-                                   <button
-                                       className={`inline-block font-poppins_bold px-2 py-1 rounded-full ${printer.working ? 'bg-green-100 text-green-500' : 'bg-red-100 text-red-500'}`}
-                                       onClick={() => handleToggleWorking(printer.id, printer.working)}
-                                       draggable="false"
-                                       style={{cursor: 'pointer'}}
-                                   >
+                                <span
+                                    className="col-span-2">{printer.createdAt?.toDate().toLocaleString('vi-VN', {hour12: false})}
+                                </span>
+                                <span className="col-span-11">{printer.name}</span>
+                                <span className="col-span-6 text-center">{printer.place.toUpperCase()}</span>
+                                <span className="col-span-3 text-center inline-flex items-center justify-center">
+                                    <button
+                                        className={`inline-block font-poppins_bold px-2 py-1 rounded-full ${printer.working ? 'bg-green-100 text-green-500' : 'bg-red-100 text-red-500'}`}
+                                        onClick={() => handleToggleWorking(printer.id, printer.working)}
+                                        draggable="false"
+                                        style={{cursor: 'pointer'}}
+                                    >
                                         {printer.working ? 'Đang hoạt động' : 'Không hoạt động'}
                                     </button>
-                            </span>
-                            <span className="col-span-1 flex justify-center items-center">
-                            <button
-                            className="w-6 h-6 cursor-pointer"
-                            onClick={() => confirmDeletePrinter(printer.id)}
+                                </span>
+                                <span className="col-span-1 flex justify-center items-center">
+                                    <button
+                                        className="h-6 cursor-pointer"
+                                        onClick={() => confirmDeletePrinter(printer.id)}
                                     >
                                         <img src={trash} alt="delete icon" className="w-6 h-6"/>
                                     </button>
@@ -366,9 +382,10 @@ const PrinterManage = () => {
                         ))}
                     </ul>
                     {selectedPrinter && (
-                        <div ref={popupRef} className="absolute bg-white p-4 border-gray-500 rounded shadow"
+                        <div ref={popupRef} className="absolute bg-white p-4 border-gray-500 rounded-xl shadow"
                              style={{top: popupPosition.top - 55, left: popupPosition.left}}>
                             <p className=""><strong>Printer ID:</strong> {selectedPrinter.pid}</p>
+                            <p className=""><strong>Created At:</strong> {selectedPrinter.createdAt?.toDate().toLocaleString()}</p>
                         </div>
                     )}
                     {showDeleteConfirm && (
@@ -378,16 +395,16 @@ const PrinterManage = () => {
                                 <p>Bạn có chắc chắn muốn xóa máy in này không?</p>
                                 <div className="flex justify-end mt-4">
                                     <button
-                                        onClick={handleCancelDelete}
-                                        className="py-2 px-4 rounded-full bg-gray-500 hover:bg-[#1488D8] text-white mr-2"
-                                    >
-                                        Hủy
-                                    </button>
-                                    <button
                                         onClick={handleConfirmDelete}
-                                        className="py-2 px-4 rounded-full bg-black hover:bg-red-700 text-white"
+                                        className="py-2 px-4 rounded-full bg-black hover:bg-red-700 text-white mr-2"
                                     >
                                         Xóa
+                                    </button>
+                                    <button
+                                        onClick={handleCancelDelete}
+                                        className="py-2 px-4 rounded-full bg-gray-500 hover:bg-[#1488D8] text-white"
+                                    >
+                                        Hủy
                                     </button>
                                 </div>
                             </div>

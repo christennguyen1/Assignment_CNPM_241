@@ -237,27 +237,47 @@ const PrintManage = () => {
                 <div className="border border-gray-300 rounded-2xl mx-10 mb-5">
                     <ul className="overflow-y-auto w-full">
                         <li className="col-span-24 grid grid-cols-24 gap-3 p-5 border-b border-gray-250 font-poppins_bold">
-                            <span className="col-span-1"></span>
-                            <span className="col-span-2 cursor-pointer select-none"
-                                  onClick={() => handleSort('createdAt')}>Thời gian {getSortArrow('createdAt')}</span>
-                            <span className="col-span-2 text-center cursor-pointer select-none"
-                                  onClick={() => handleSort('size')}>Kích cỡ {getSortArrow('size')}</span>
-                            <span className="col-span-2 text-center cursor-pointer select-none"
-                                  onClick={() => handleSort('copies')}>Số bản {getSortArrow('copies')}</span>
-                            <span className="col-span-2 text-center cursor-pointer select-none"
-                                  onClick={() => handleSort('sides')}>Số mặt {getSortArrow('sides')}</span>
-                            <span className="col-span-3 cursor-pointer select-none"
-                                  onClick={() => handleSort('location')}>Địa điểm {getSortArrow('location')}</span>
-                            <span className="col-span-2 cursor-pointer select-none"
-                                  onClick={() => handleSort('printer')}>Máy in {getSortArrow('printer')}</span>
-                            <span className="col-span-2 text-center cursor-pointer select-none"
-                                  onClick={() => handleSort('totalPages')}>Tổng trang {getSortArrow('totalPages')}</span>
-                            <span className="col-span-2 text-center cursor-pointer select-none"
-                                  onClick={() => handleSort('totalPrice')}>Tổng giá {getSortArrow('totalPrice')}</span>
-                            <span className="col-span-4 text-center cursor-pointer select-none"
-                                  onClick={() => handleSort('files')}>Tập tin {getSortArrow('files')}</span>
-                            <span className="col-span-2 text-center cursor-pointer select-none"
-                                  onClick={() => handleSort('status')}>Trạng thái {getSortArrow('status')}</span>
+                            <button className="col-span-1" disabled></button>
+                            <button className="col-span-2 cursor-pointer select-none text-left"
+                                    onClick={() => handleSort('createdAt')}>
+                                Thời gian {getSortArrow('createdAt')}
+                            </button>
+                            <button className="col-span-2 text-center cursor-pointer select-none"
+                                    onClick={() => handleSort('size')}>
+                                Kích cỡ {getSortArrow('size')}
+                            </button>
+                            <button className="col-span-2 text-center cursor-pointer select-none"
+                                    onClick={() => handleSort('copies')}>
+                                Số bản {getSortArrow('copies')}
+                            </button>
+                            <button className="col-span-2 text-center cursor-pointer select-none"
+                                    onClick={() => handleSort('sides')}>
+                                Số mặt {getSortArrow('sides')}
+                            </button>
+                            <button className="col-span-3 cursor-pointer select-none"
+                                    onClick={() => handleSort('location')}>
+                                Địa điểm {getSortArrow('location')}
+                            </button>
+                            <button className="col-span-2 cursor-pointer select-none"
+                                    onClick={() => handleSort('printer')}>
+                                Máy in {getSortArrow('printer')}
+                            </button>
+                            <button className="col-span-2 text-center cursor-pointer select-none"
+                                    onClick={() => handleSort('totalPages')}>
+                                Tổng trang {getSortArrow('totalPages')}
+                            </button>
+                            <button className="col-span-2 text-center cursor-pointer select-none"
+                                    onClick={() => handleSort('totalPrice')}>
+                                Tổng giá {getSortArrow('totalPrice')}
+                            </button>
+                            <button className="col-span-4 text-center cursor-pointer select-none"
+                                    onClick={() => handleSort('files')}>
+                                Tập tin {getSortArrow('files')}
+                            </button>
+                            <button className="col-span-2 text-center cursor-pointer select-none"
+                                    onClick={() => handleSort('status')}>
+                                Trạng thái {getSortArrow('status')}
+                            </button>
                         </li>
                         {sortedHistory.map((order) => (
                             <li key={order.id}
@@ -322,7 +342,7 @@ const PrintManage = () => {
                         ))}
                     </ul>
                     {selectedOrder && (
-                        <div ref={popupRef} className="absolute bg-white p-4 border-gray-500 rounded shadow"
+                        <div ref={popupRef} className="absolute bg-white p-4 border-gray-500 rounded-xl shadow"
                              style={{top: popupPosition.top - 55, left: popupPosition.left}}>
                             <p className=""><strong>Order ID:</strong> {selectedOrder.oid}</p>
                             <p className=""><strong>User ID:</strong> {selectedOrder.uid}</p>

@@ -134,15 +134,15 @@ const Feedback = () => {
     const getEmotionClass = (emotion) => {
         switch (emotion) {
             case 'love':
-                return 'text-green-500';
+                return 'text-green-500 bg-green-100';
             case 'like':
-                return 'text-yellow-500';
+                return 'text-yellow-800 bg-yellow-200'
             case 'neutral':
-                return 'text-gray-500';
+                return 'text-gray-500 bg-gray-100';
             case 'dislike':
-                return 'text-orange-500';
+                return 'text-orange-500 bg-orange-100';
             case 'hate':
-                return 'text-red-500';
+                return 'text-red-500 bg-red-100';
             default:
                 return '';
         }
@@ -211,11 +211,11 @@ const Feedback = () => {
                                     onClick={() => handleSort('title')}>
                                 Tiêu đề
                             </button>
-                            <button className="col-span-12 cursor-pointer select-none text-center"
+                            <button className="col-span-11 cursor-pointer select-none text-center"
                                     onClick={() => handleSort('description')}>
                                 Mô tả
                             </button>
-                            <button className="col-span-2 cursor-pointer select-none text-center"
+                            <button className="col-span-3 cursor-pointer select-none text-center"
                                     onClick={() => handleSort('emotion')}>
                                 Độ hài lòng
                             </button>
@@ -243,15 +243,17 @@ const Feedback = () => {
                                 </span>
                                 <span
                                     className="col-span-5 text-center break-words overflow-hidden">{feedback.title}</span>
-                                <span className="col-span-12 break-words overflow-hidden">{feedback.description}</span>
-                                <span className={`col-span-2 font-poppins_bold ${getEmotionClass(feedback.emotion)}`}>
-                                    {getEmotionText(feedback.emotion)}
+                                <span className="col-span-11 break-words overflow-hidden">{feedback.description}</span>
+                                <span className="col-span-3 text-center inline-flex items-center justify-center">
+                                    <span className={`font-poppins_bold inline-block rounded-full px-2 py-1 ${getEmotionClass(feedback.emotion)}`}>
+                                        {getEmotionText(feedback.emotion)}
+                                    </span>
                                 </span>
                             </li>
                         ))}
                     </ul>
                     {selectedFeedback && (
-                        <div ref={popupRef} className="absolute bg-white p-4 border-gray-500 rounded shadow"
+                        <div ref={popupRef} className="absolute bg-white p-4 border-gray-500 rounded-xl shadow"
                              style={{top: popupPosition.top - 55, left: popupPosition.left}}>
                             <p className=""><strong>Feedback ID:</strong> {selectedFeedback.fid}</p>
                             <p className=""><strong>User ID:</strong> {selectedFeedback.uid}</p>
