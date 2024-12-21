@@ -225,7 +225,7 @@ const PrinterManage = () => {
                         <button
                             ref={addButtonRef}
                             onClick={() => setShowAddForm(true)}
-                            className="py-2 px-4 rounded-full font-poppins_bold bg-black text-white"
+                            className="py-2 px-4 rounded-full font-poppins_bold bg-black text-white hover:bg-[#1488D8]"
                         >
                             Thêm máy in
                         </button>
@@ -237,30 +237,33 @@ const PrinterManage = () => {
                         <h3 className="text-xl font-poppins_bold mb-4">Thêm máy in mới</h3>
                         <form onSubmit={handleAddPrinter}>
                             <div className="mb-4">
-                                <label className="block text-gray-700">Tên máy in</label>
+                                <label htmlFor="printerName" className="block text-gray-700">Tên máy in</label>
                                 <input
+                                    id="printerName"
                                     type="text"
                                     value={newPrinter.name}
-                                    onChange={(e) => setNewPrinter({ ...newPrinter, name: e.target.value })}
+                                    onChange={(e) => setNewPrinter({...newPrinter, name: e.target.value})}
                                     className="w-full px-3 py-2 border rounded"
                                     required
                                 />
                             </div>
                             <div className="mb-4">
-                                <label className="block text-gray-700">PID</label>
+                                <label htmlFor="printerPID" className="block text-gray-700">PID</label>
                                 <input
+                                    id="printerPID"
                                     type="text"
                                     value={newPrinter.pid}
-                                    onChange={(e) => setNewPrinter({ ...newPrinter, pid: e.target.value })}
+                                    onChange={(e) => setNewPrinter({...newPrinter, pid: e.target.value})}
                                     className="w-full px-3 py-2 border rounded"
                                     required
                                 />
                             </div>
                             <div className="mb-4">
-                                <label className="block text-gray-700">Vị trí</label>
+                                <label htmlFor="printerPlace" className="block text-gray-700">Vị trí</label>
                                 <select
+                                    id="printerPlace"
                                     value={newPrinter.place}
-                                    onChange={(e) => setNewPrinter({ ...newPrinter, place: e.target.value })}
+                                    onChange={(e) => setNewPrinter({...newPrinter, place: e.target.value})}
                                     className="w-full px-3 py-2 border rounded"
                                     required
                                 >
@@ -277,10 +280,11 @@ const PrinterManage = () => {
                                 </select>
                             </div>
                             <div className="mb-4">
-                                <label className="block text-gray-700">Trạng thái</label>
+                                <label htmlFor="printerStatus" className="block text-gray-700">Trạng thái</label>
                                 <select
+                                    id="printerStatus"
                                     value={newPrinter.working}
-                                    onChange={(e) => setNewPrinter({ ...newPrinter, working: e.target.value === 'true' })}
+                                    onChange={(e) => setNewPrinter({...newPrinter, working: e.target.value === 'true'})}
                                     className="w-full px-3 py-2 border rounded"
                                     required
                                 >
@@ -309,14 +313,18 @@ const PrinterManage = () => {
                 <div className="border border-gray-300 rounded-2xl mx-10 mb-5">
                     <ul className="overflow-y-auto w-full">
                         <li className="col-span-24 grid grid-cols-24 gap-3 p-5 border-b border-gray-250 font-poppins_bold">
-                            <span className="col-span-1"></span>
-                            <span className="col-span-9 cursor-pointer select-none"
-                                  onClick={() => handleSort('name')}>Tên máy in {getSortArrow('name')}</span>
-                            <span className="col-span-7 text-center cursor-pointer select-none"
-                                  onClick={() => handleSort('place')}>Vị trí {getSortArrow('place')}</span>
-                            <span className="col-span-6 text-center cursor-pointer select-none"
-                                  onClick={() => handleSort('working')}>Trạng thái {getSortArrow('working')}</span>
-                            <span className="col-span-1 text-center">Xóa</span>
+                            <button className="col-span-9 cursor-pointer select-none text-left"
+                                    onClick={() => handleSort('name')}>
+                                Tên máy in {getSortArrow('name')}
+                            </button>
+                            <button className="col-span-7 cursor-pointer select-none text-center"
+                                    onClick={() => handleSort('place')}>
+                                Vị trí {getSortArrow('place')}
+                            </button>
+                            <button className="col-span-6 cursor-pointer select-none text-center"
+                                    onClick={() => handleSort('working')}>
+                                Trạng thái {getSortArrow('working')}
+                            </button>
                         </li>
                         {sortedPrinterList.map((printer) => (
                             <li key={printer.id}
@@ -337,19 +345,19 @@ const PrinterManage = () => {
                                 <span className="col-span-9">{printer.name}</span>
                                 <span className="col-span-7 text-center">{printer.place.toUpperCase()}</span>
                                 <span className="col-span-6 text-center inline-flex items-center justify-center">
-                                   <span
+                                   <button
                                        className={`inline-block font-poppins_bold px-2 py-1 rounded-full ${printer.working ? 'bg-green-100 text-green-500' : 'bg-red-100 text-red-500'}`}
                                        onClick={() => handleToggleWorking(printer.id, printer.working)}
                                        draggable="false"
                                        style={{cursor: 'pointer'}}
                                    >
                                         {printer.working ? 'Đang hoạt động' : 'Không hoạt động'}
-                                    </span>
-                                </span>
-                                <span className="col-span-1 flex justify-center items-center">
-                                    <button
-                                        className="w-6 h-6 cursor-pointer"
-                                        onClick={() => confirmDeletePrinter(printer.id)}
+                                    </button>
+                            </span>
+                            <span className="col-span-1 flex justify-center items-center">
+                            <button
+                            className="w-6 h-6 cursor-pointer"
+                            onClick={() => confirmDeletePrinter(printer.id)}
                                     >
                                         <img src={trash} alt="delete icon" className="w-6 h-6"/>
                                     </button>
@@ -365,7 +373,7 @@ const PrinterManage = () => {
                     )}
                     {showDeleteConfirm && (
                         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                            <div className="bg-white p-6 rounded shadow-lg">
+                            <div className="bg-white p-6 rounded-2xl shadow-lg">
                                 <h3 className="text-xl font-poppins_bold mb-4">Xác nhận xóa</h3>
                                 <p>Bạn có chắc chắn muốn xóa máy in này không?</p>
                                 <div className="flex justify-end mt-4">
@@ -377,7 +385,7 @@ const PrinterManage = () => {
                                     </button>
                                     <button
                                         onClick={handleConfirmDelete}
-                                        className="py-2 px-4 rounded-full bg-red-500 hover:bg-red-700 text-white"
+                                        className="py-2 px-4 rounded-full bg-black hover:bg-red-700 text-white"
                                     >
                                         Xóa
                                     </button>

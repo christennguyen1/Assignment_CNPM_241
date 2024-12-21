@@ -4,9 +4,14 @@ import { useContext, useState, useEffect, useCallback } from "react";
 import myContext from "../../../context/myContext.jsx";
 import toast from "react-hot-toast";
 import Loader from "../../../components/loader/Loader.jsx";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, setDoc } from "firebase/firestore";
 import { fireDB } from "../../../firebase/FirebaseConfig.jsx";
 import HCMUT from "../../../assets/feedback_wallpaper.png";
+import love from "../../../assets/love.svg";
+import like from "../../../assets/like.svg";
+import neutral from "../../../assets/neutral.svg";
+import dislike from "../../../assets/dislike.svg";
+import hate from "../../../assets/hate.svg";
 
 const Feedback = () => {
     const context = useContext(myContext);
@@ -21,25 +26,38 @@ const Feedback = () => {
         description: ""
     });
 
+    // Option State
+    const [option, setOption] = useState("report");
+
+    // Emotion State
+    const [emotion, setEmotion] = useState("");
+
     const sendFeedbackFunction = useCallback(async () => {
         // validation
-        if (report.title === "" || report.description === "") {
+        if (report.title === "" || report.description === "" || (option === "feedback" && emotion === "")) {
             toast.error("Tất cả các trường là bắt buộc");
             return;
         }
 
         setLoading(true);
         try {
-            await addDoc(collection(fireDB, "report"), {
+            const feedbackRef = await addDoc(collection(fireDB, "feedback"), {
                 title: report.title,
                 description: report.description,
                 uid: JSON.parse(localStorage.getItem('users')).uid,
-                timestamp: new Date()
+                timestamp: new Date(),
+                type: option,
+                emotion: option === "feedback" ? emotion : null
             });
+
+            // Add fid field
+            await setDoc(feedbackRef, { fid: feedbackRef.id }, { merge: true });
+
             setReport({
                 title: "",
                 description: ""
             });
+            setEmotion("");
             toast.success("Gửi yêu cầu thành công");
             setLoading(false);
             navigate('/');
@@ -48,13 +66,14 @@ const Feedback = () => {
             setLoading(false);
             toast.error("Gửi yêu cầu thất bại");
         }
-    }, [report, setLoading, navigate]);
+    }, [report, setLoading, navigate, option, emotion]);
 
     const handleCancel = useCallback(() => {
         setReport({
             title: "",
             description: ""
         });
+        setEmotion("");
         navigate('/');
     }, [navigate]);
 
@@ -102,24 +121,119 @@ const Feedback = () => {
                     }}
                 >
                     {/* Top Heading */}
-                    <div className="mb-5">
+                    <div className="mb-3">
                         <h2 className='text-left text-2xl font-poppins_bold'>
-                            Báo Lỗi
+                            Phản hồi
                         </h2>
-                        <div className='text-left text-sm mt-2'>
-                            Chúng tôi rất tiếc vì có lỗi đã xảy ra. Vui lòng báo lỗi để Admin có thể hỗ trợ bạn sớm nhất
-                            có thể!
+                        <div className='text-left'>
+                            Vui lòng chọn loại phản hồi và điền thông tin chi tiết:
                         </div>
                     </div>
 
+                    {/* Option Selection */}
+                    <div className="flex flex-col mb-3">
+                        <input
+                            type="radio"
+                            id="report"
+                            name="option"
+                            value="report"
+                            checked={option === "report"}
+                            onChange={(e) => setOption(e.target.value)}
+                        />
+                        <label htmlFor="report" className="flex items-center font-poppins_semibold">
+                            Báo lỗi
+                        </label>
+                        <input
+                            type="radio"
+                            id="feedback"
+                            name="option"
+                            value="feedback"
+                            checked={option === "feedback"}
+                            onChange={(e) => setOption(e.target.value)}
+                        />
+                        <label htmlFor="feedback" className="flex items-center font-poppins_semibold">
+                            Đánh giá chất lượng dịch vụ
+                        </label>
+                    </div>
+
+                    {/* Emotion Selection */}
+                    {option === "feedback" && (
+                        <div>
+                            <label htmlFor="emotion" className="block">Xin hãy đánh giá trải nghiệm
+                                dịch vụ của bạn:</label>
+                            <div className="flex space-x-4 mt-2">
+                                <button
+                                    type="button"
+                                    onClick={() => setEmotion("love")}
+                                    className={`cursor-pointer ${emotion === "love" ? "w-16 h-16" : "w-12 h-12 opacity-50"}`}
+                                >
+                                    <img
+                                        src={love}
+                                        alt="Love"
+                                        draggable="false"
+                                        className="w-full h-full"
+                                    />
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setEmotion("like")}
+                                    className={`cursor-pointer ${emotion === "like" ? "w-16 h-16" : "w-12 h-12 opacity-50"}`}
+                                >
+                                    <img
+                                        src={like}
+                                        alt="Like"
+                                        draggable="false"
+                                        className="w-full h-full"
+                                    />
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setEmotion("neutral")}
+                                    className={`cursor-pointer ${emotion === "neutral" ? "w-16 h-16" : "w-12 h-12 opacity-50"}`}
+                                >
+                                    <img
+                                        src={neutral}
+                                        alt="Neutral"
+                                        draggable="false"
+                                        className="w-full h-full"
+                                    />
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setEmotion("dislike")}
+                                    className={`cursor-pointer ${emotion === "dislike" ? "w-16 h-16" : "w-12 h-12 opacity-50"}`}
+                                >
+                                    <img
+                                        src={dislike}
+                                        alt="Dislike"
+                                        draggable="false"
+                                        className="w-full h-full"
+                                    />
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setEmotion("hate")}
+                                    className={`cursor-pointer ${emotion === "hate" ? "w-16 h-16" : "w-12 h-12 opacity-50"}`}
+                                >
+                                    <img
+                                        src={hate}
+                                        alt="Hate"
+                                        draggable="false"
+                                        className="w-full h-full"
+                                    />
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
                     {/* Input One */}
-                    <div className="mb-3">
-                        <label htmlFor="title" className="block text-sm font-medium">Tiêu đề</label>
+                    <div className="pt-3">
+                        <label htmlFor="title" className="block">Tiêu đề</label>
                         <input
                             type="text"
                             id="title"
                             name="title"
-                            placeholder='Tên lỗi bạn gặp phải?'
+                            placeholder={option === "feedback" ? 'Tiêu đề đánh giá của bạn?' : 'Tên lỗi bạn gặp phải?'}
                             value={report.title}
                             onChange={(e) => {
                                 setReport({
@@ -133,10 +247,10 @@ const Feedback = () => {
 
                     {/* Input Two */}
                     <div className="mb-5 flex-grow">
-                        <label htmlFor="description" className="block text-sm font-medium">Mô tả</label>
+                        <label htmlFor="description" className="block">Mô tả</label>
                         <textarea
                             id="description"
-                            placeholder='Chi tiết loại lỗi bạn gặp phải là gì?'
+                            placeholder={option === "feedback" ? 'Chi tiết đánh giá của bạn?' : 'Chi tiết loại lỗi bạn gặp phải là gì?'}
                             value={report.description}
                             onChange={(e) => {
                                 setReport({

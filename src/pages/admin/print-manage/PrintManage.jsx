@@ -234,7 +234,7 @@ const PrintManage = () => {
                         />
                     </div>
                 </div>
-                <div className="border border-gray-300 rounded-lg mx-10">
+                <div className="border border-gray-300 rounded-2xl mx-10 mb-5">
                     <ul className="overflow-y-auto w-full">
                         <li className="col-span-24 grid grid-cols-24 gap-3 p-5 border-b border-gray-250 font-poppins_bold">
                             <span className="col-span-1"></span>
@@ -323,7 +323,7 @@ const PrintManage = () => {
                     </ul>
                     {selectedOrder && (
                         <div ref={popupRef} className="absolute bg-white p-4 border-gray-500 rounded shadow"
-                             style={{top: popupPosition.top, left: popupPosition.left}}>
+                             style={{top: popupPosition.top - 55, left: popupPosition.left}}>
                             <p className=""><strong>Order ID:</strong> {selectedOrder.oid}</p>
                             <p className=""><strong>User ID:</strong> {selectedOrder.uid}</p>
                         </div>

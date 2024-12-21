@@ -113,6 +113,21 @@ const Navbar = () => {
                             <div className="flex items-center">Feedback</div>
                         </Link>
                     </li>
+                    <li>
+                        <Link to={'/printer-manage'}>
+                            <div className="flex items-center">Printer</div>
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to={'/user-manage'}>
+                            <div className="flex items-center">User</div>
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to={'/analytics'}>
+                            <div className="flex items-center">Analytics</div>
+                        </Link>
+                    </li>
                 </>
             )}
         </ul>

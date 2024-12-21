@@ -190,8 +190,6 @@ input[type="radio"] + label::before {
     content: url("assets/radio_no.svg");
     display: inline-block;
     margin-right: 8px;
-    width: 20px;
-    height: 20px;
 }
 
 /* Change the icon when the radio button is checked */

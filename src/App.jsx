@@ -5,12 +5,12 @@ import {
 } from "react-router-dom";
 import HomePage from "./pages/home/HomePage";
 import NoPage from "./pages/noPage/NoPage";
-import ScrollTop from "./components/scrollTop/ScrollTop";
 import PrintRequest from "./pages/user/print-request/PrintRequest.jsx";
 import AboutUs from  "./pages/about-us/AboutUs.jsx";
 import Feedback from "./pages/user/feedback/Feedback.jsx";
 import PrintManage from "./pages/admin/print-manage/PrintManage.jsx";
-import ErrorManage from "./pages/admin/error-manage/ErrorManage.jsx";
+import FeedbackManage from "./pages/admin/feedback-manage/FeedbackManage.jsx";
+import PrinterManage from "./pages/admin/printer-manage/PrinterManage.jsx";
 import Signup from "./pages/registration/Signup";
 import Login from "./pages/registration/Login";
 import Dashboard from "./pages/Dashboard.jsx";
@@ -29,7 +29,6 @@ const App = () => {
   return (
     <MyState>
       <Router>
-        <ScrollTop />
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/*" element={<NoPage />} />
@@ -51,9 +50,14 @@ const App = () => {
           } />
           <Route path="/error-manage" element={
             <ProtectedRouteForAdmin>
-              <ErrorManage/>
+              <FeedbackManage/>
             </ProtectedRouteForAdmin>
           } />
+            <Route path="/printer-manage" element={
+                <ProtectedRouteForAdmin>
+                <PrinterManage/>
+                </ProtectedRouteForAdmin>
+            } />
           <Route path="/sign-up" element={<Signup />} />
           <Route path="/log-in" element={<Login />} />
           <Route path="/log-out" element={<Logout />} />

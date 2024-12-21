@@ -3,7 +3,7 @@ import * as pdfjsLib from "pdfjs-dist";
 import mammoth from "mammoth";
 import toast from "react-hot-toast";
 import { fireDB, storage } from "../../firebase/FirebaseConfig.jsx";
-import { Timestamp, addDoc, setDoc, doc, collection, getDoc } from "firebase/firestore";
+import { Timestamp, addDoc, setDoc, doc, collection, getDocs, getDoc, query } from "firebase/firestore";
 import myContext from "../../context/myContext.jsx";
 import Loader from "../loader/Loader.jsx";
 import { ref, uploadBytesResumable } from "firebase/storage";
@@ -28,8 +28,10 @@ const OrderPrint = () => {
     const [fileNames, setFileNames] = useState([]);
     const [files, setFiles] = useState([]);
     const [uploadProgress, setUploadProgress] = useState({});
-    const fileInputRef = useRef(null);
     const [userPaperCount, setUserPaperCount] = useState(user[size]);
+    const [printers, setPrinters] = useState([]);
+    const [filteredPrinters, setFilteredPrinters] = useState([]);
+    const fileInputRef = useRef(null);
 
     const getUserPaperCount = useCallback(async () => {
         try {
@@ -290,9 +292,12 @@ const OrderPrint = () => {
     };
 
     const handleLocationChange = (e) => {
-        setLocation(e.target.value);
-        if (e.target.value !== 'custom') {
-            setCustomLocation('');
+        const selectedLocation = e.target.value;
+        setLocation(selectedLocation);
+        if (selectedLocation === 'custom') {
+            setFilteredPrinters(printers);
+        } else {
+            setFilteredPrinters(printers.filter(printer => printer.place === selectedLocation));
         }
     };
 
@@ -302,10 +307,6 @@ const OrderPrint = () => {
 
     const handleCopiesChange = (e) => {
         setCopies(e.target.value);
-    };
-
-    const handlePrinterChange = (e) => {
-        setPrinter(e.target.value);
     };
 
     const handleSidesChange = (e) => {
@@ -344,6 +345,32 @@ const OrderPrint = () => {
         calculateTotalPrice();
     }, [size, copies, location, totalPages]);
 
+    useEffect(() => {
+        const fetchPrinters = async () => {
+            setLoading(true);
+            try {
+                const q = query(collection(fireDB, 'printer'));
+                const querySnapshot = await getDocs(q);
+                const printerList = querySnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    name: doc.data().name,
+                    place: doc.data().place
+                }));
+                setPrinters(printerList);
+            } catch (error) {
+                console.error("Error fetching printers: ", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        void fetchPrinters();
+    }, [setLoading]);
+
+    const handlePrinterChange = (e) => {
+        setPrinter(e.target.value);
+    };
+
     return (
         <div
             className="flex-[2_1_60%] border rounded-xl border-gray-300 flex flex-col items-start justify-start p-3 relative">
@@ -358,7 +385,7 @@ const OrderPrint = () => {
                 {/* Left Column */}
                 <div className="w-1/2 pr-2 ml-5 mr-14">
                     <div className="w-full flex items-center mb-3">
-                        <label htmlFor="printer" className="w-1/3">Địa điểm:</label>
+                        <label htmlFor="printing" className="w-1/3">Địa điểm:</label>
                         <select
                             className={`w-2/3 py-2 px-1 rounded-md ${
                                 location === '' ? 'text-gray-400' : 'text-black'
@@ -407,7 +434,7 @@ const OrderPrint = () => {
                     {location === 'custom' && (
                         <>
                             <div className="w-full flex items-center mb-3">
-                                <label htmlFor="printer" className="w-1/3">Địa chỉ ship:</label>
+                                <label htmlFor="printing" className="w-1/3">Địa chỉ ship:</label>
                                 <input
                                     type="text"
                                     className="w-2/3 border border-gray-300 p-2 rounded-md"
@@ -423,7 +450,7 @@ const OrderPrint = () => {
                         </>
                     )}
                     <div className="w-full flex items-center mb-3">
-                        <label htmlFor="printer" className="w-1/3">Khổ giấy:</label>
+                        <label htmlFor="printing" className="w-1/3">Khổ giấy:</label>
                         <select
                             className={`w-2/3 py-2 px-1 rounded-md ${size === '' ? 'text-gray-400' : 'text-black'} custom-select`}
                             value={size}
@@ -438,7 +465,7 @@ const OrderPrint = () => {
                         </select>
                     </div>
                     <div className="w-full flex items-center mb-3">
-                        <label htmlFor="printer" className="w-1/3">Số bản:</label>
+                        <label htmlFor="printing" className="w-1/3">Số bản:</label>
                         <input
                             type="number"
                             className="w-2/3 border border-gray-300 p-2 rounded-md"
@@ -461,29 +488,29 @@ const OrderPrint = () => {
                 {/* Right Column */}
                 <div className="w-1/2 pl-2 mr-5">
                     <div className="w-full flex items-center mb-3">
-                        <label htmlFor="printer" className="w-1/3">Email:</label>
+                        <label htmlFor="printing" className="w-1/3">Email:</label>
                         <div
                             className="w-2/3 border border-gray-300 py-2 px-2 rounded-md overflow-hidden text-ellipsis whitespace-nowrap">
                             {user?.email}
                         </div>
                     </div>
                     <div className="w-full flex items-center mb-3">
-                        <label htmlFor="printer" className="w-1/3">Máy in:</label>
+                        <label htmlFor="printing" className="w-1/3">Máy in:</label>
                         <select
-                            className={`w-2/3 py-2 px-1 rounded-md ${
-                                printer === '' ? 'text-gray-400' : 'text-black'
-                            } custom-select`}
+                            className={`w-2/3 py-2 px-1 rounded-md ${printer === '' ? 'text-gray-400' : 'text-black'} custom-select`}
                             value={printer}
                             onChange={handlePrinterChange}
                         >
                             <option value="" disabled hidden>Chọn máy in</option>
-                            <option value="printerany" className="text-black">Máy in bất kỳ</option>
-                            <option value="printer1" className="text-black">Máy in Canon</option>
-                            <option value="printer2" className="text-black">Máy in HP</option>
+                            {filteredPrinters.map((printer) => (
+                                <option key={printer.id} value={printer.id} className="text-black">
+                                    {printer.name}
+                                </option>
+                            ))}
                         </select>
                     </div>
                     <div className="w-full flex items-center mb-3">
-                        <label htmlFor="printer" className="w-1/3">Số mặt:</label>
+                        <label htmlFor="printing" className="w-1/3">Số mặt:</label>
                         <select
                             className={`w-2/3 py-2 px-1 rounded-md ${
                                 sides === '' ? 'text-gray-400' : 'text-black'
