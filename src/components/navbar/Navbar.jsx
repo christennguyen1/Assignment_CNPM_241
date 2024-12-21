@@ -110,7 +110,7 @@ const Navbar = () => {
                     </li>
                     <li>
                         <Link to={'/error-manage'}>
-                            <div className="flex items-center">Bug</div>
+                            <div className="flex items-center">Feedback</div>
                         </Link>
                     </li>
                 </>

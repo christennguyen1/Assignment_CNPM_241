@@ -1,3 +1,4 @@
+// tailwind.config.js
 import withMT from "@material-tailwind/react/utils/withMT";
 
 export default withMT({
@@ -16,8 +17,6 @@ export default withMT({
         poppins_bolditalic: ["Poppins_BoldItalic", "sans-serif"],
         poppins_extrabold: ["Poppins_ExtraBold", "sans-serif"],
         poppins_extrabolditalic: ["Poppins_ExtraBoldItalic", "sans-serif"],
-        poppins_extralight: ["Poppins_ExtraLight", "sans-serif"],
-        poppins_extralightitalic: ["Poppins_ExtraLightItalic", "sans-serif"],
         poppins_italic: ["Poppins_Italic", "sans-serif"],
         poppins_light: ["Poppins_Light", "sans-serif"],
         poppins_lightitalic: ["Poppins_LightItalic", "sans-serif"],
@@ -28,6 +27,13 @@ export default withMT({
         poppins_thin: ["Poppins_Thin", "sans-serif"],
         poppins_thinitalic: ["Poppins_ThinItalic", "sans-serif"]
       },
+      gridColumn: {
+        'span-24': 'span 24 / span 24',
+        '24': '24',
+      },
+      gridTemplateColumns: {
+        '24': 'repeat(24, minmax(0, 1fr))',
+      }
     },
   },
   plugins: [],

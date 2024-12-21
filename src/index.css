@@ -167,3 +167,8 @@ select {
     background-color: white;
     color: black;
 }
+
+/* print-mange */
+.col-span-0-dot-5 {
+    grid-column: span 0.5;
+}

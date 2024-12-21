@@ -1,13 +1,15 @@
+import { useContext, useEffect, useState, useCallback, useRef } from "react";
+import { collection, getDocs, doc, setDoc, query } from "firebase/firestore";
+import { listAll, ref, getDownloadURL } from "firebase/storage";
+import { fireDB, storage } from "../../../firebase/FirebaseConfig.jsx";
 import Layout from "../../../components/layout/Layout";
-import {useContext, useEffect, useState, useCallback, useRef} from "react";
-import {collection, getDocs, doc, setDoc, query} from "firebase/firestore";
-import {listAll, ref, getDownloadURL} from "firebase/storage";
-import {fireDB, storage}from "../../../firebase/FirebaseConfig.jsx";
 import Loader from "../../../components/loader/Loader.jsx";
 import myContext from "../../../context/myContext.jsx";
 import info from "../../../assets/info.svg";
 import approve from "../../../assets/approve.svg";
 import reject from "../../../assets/reject.svg";
+import up from "../../../assets/up.svg";
+import down from "../../../assets/down.svg";
 import pdf from "../../../assets/pdf.svg";
 import docx from "../../../assets/doc.svg";
 
@@ -16,8 +18,12 @@ const PrintManage = () => {
     const { loading, setLoading } = context;
 
     const [printHistory, setPrintHistory] = useState([]);
+    const [filteredHistory, setFilteredHistory] = useState([]);
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
+    const [filter, setFilter] = useState('all');
+    const [searchInput, setSearchInput] = useState('');
+    const [sortConfig, setSortConfig] = useState({ key: 'createdAt', direction: 'desc' });
     const popupRef = useRef(null);
 
     const statusMap = {
@@ -53,6 +59,7 @@ const PrintManage = () => {
             }));
             history.sort((a, b) => b.createdAt.toDate() - a.createdAt.toDate());
             setPrintHistory(history);
+            setFilteredHistory(history);
         } catch (error) {
             console.error('Error fetching print history:', error);
         } finally {
@@ -63,6 +70,22 @@ const PrintManage = () => {
     useEffect(() => {
         void fetchPrintHistory();
     }, [fetchPrintHistory]);
+
+    useEffect(() => {
+        let filtered = printHistory;
+        if (filter !== 'all') {
+            filtered = filtered.filter(order => order.status === filter);
+        }
+        if (searchInput) {
+            filtered = filtered.filter(order =>
+                order.id.includes(searchInput) ||
+                order.uid.includes(searchInput) ||
+                order.printer.includes(searchInput) ||
+                order.files.some(file => file.fileName.includes(searchInput))
+            );
+        }
+        setFilteredHistory(filtered);
+    }, [filter, searchInput, printHistory]);
 
     const handleApprove = async (orderId) => {
         setLoading(true);
@@ -123,30 +146,123 @@ const PrintManage = () => {
         };
     }, [popupRef]);
 
+    useEffect(() => {
+        let filtered = printHistory;
+        if (filter !== 'all') {
+            filtered = filtered.filter(order => order.status === filter);
+        }
+        if (searchInput) {
+            filtered = filtered.filter(order =>
+                order.id.includes(searchInput) ||
+                order.uid.includes(searchInput) ||
+                order.printer.includes(searchInput) ||
+                order.size.toUpperCase().includes(searchInput.toUpperCase()) ||
+                order.copies.toString().includes(searchInput) ||
+                order.location.toUpperCase().includes(searchInput.toUpperCase()) ||
+                order.totalPrice.toString().includes(searchInput) ||
+                order.totalPages.toString().includes(searchInput) ||
+                order.customLocation?.toUpperCase().includes(searchInput.toUpperCase()) ||
+                order.createdAt.toDate().toLocaleString('vi-VN', { hour12: false }).includes(searchInput) ||
+                order.files.some(file => file.fileName.includes(searchInput))
+            );
+        }
+        setFilteredHistory(filtered);
+    }, [filter, searchInput, printHistory]);
+
+    const toggleFilter = (newFilter) => {
+        setFilter((prevFilter) => (prevFilter === newFilter ? 'all' : newFilter));
+    };
+
+    const handleSort = (key) => {
+        let direction = 'asc';
+        if (sortConfig.key === key && sortConfig.direction === 'asc') {
+            direction = 'desc';
+        }
+        setSortConfig({ key, direction });
+    };
+
+    const sortedHistory = [...filteredHistory].sort((a, b) => {
+        if (a[sortConfig.key] < b[sortConfig.key]) {
+            return sortConfig.direction === 'asc' ? -1 : 1;
+        }
+        if (a[sortConfig.key] > b[sortConfig.key]) {
+            return sortConfig.direction === 'asc' ? 1 : -1;
+        }
+        return 0;
+    });
+
+    const getSortArrow = (key) => {
+        if (sortConfig.key === key) {
+            return sortConfig.direction === 'asc' ? <img src={up} alt="up arrow" className="inline w-3 h-3 ml-1" /> : <img src={down} alt="down arrow" className="inline w-3 h-3 ml-1" />;
+        }
+        return null;
+    };
+
     return (
         <Layout>
             <div className="relative">
                 {loading && <Loader />}
-                <div className="sticky rounded-t-xl top-0 py-5 px-10 bg-white z-5 shadow">
-                    <h2 className="text-xl font-poppins_bold">Lịch sử in</h2>
+                <div className="rounded-t-xl top-0 py-5 px-10 bg-white z-5">
+                    <h2 className="text-2xl font-poppins_bold">Quản lý yêu cầu in</h2>
+                    <div className="flex space-x-4 mt-4 justify-between">
+                        <div className="flex space-x-4">
+                            <button
+                                onClick={() => toggleFilter('pending')}
+                                className={`py-2 px-4 rounded-full ${filter === 'pending' ? 'bg-yellow-200 text-yellow-800' : 'bg-gray-200 text-gray-800'}`}
+                            >
+                                Đang chờ
+                            </button>
+                            <button
+                                onClick={() => toggleFilter('approve')}
+                                className={`py-2 px-4 rounded-full ${filter === 'approve' ? 'bg-green-100 text-green-500' : 'bg-gray-200 text-gray-800'}`}
+                            >
+                                Đã duyệt
+                            </button>
+                            <button
+                                onClick={() => toggleFilter('reject')}
+                                className={`py-2 px-4 rounded-full ${filter === 'reject' ? 'bg-red-100 text-red-500' : 'bg-gray-200 text-gray-800'}`}
+                            >
+                                Đã hủy
+                            </button>
+                        </div>
+                        <input
+                            type="text"
+                            value={searchInput}
+                            onChange={(e) => setSearchInput(e.target.value)}
+                            placeholder="Tìm kiếm để lọc dữ liệu..."
+                            className="py-2 pl-4 pr-10 rounded-full border border-gray-300"
+                        />
+                    </div>
                 </div>
-                <ul className="grid grid-cols-12 gap-4 overflow-y-auto h-[calc(100vh-8rem)] w-full">
-                    <li className="col-span-12 grid grid-cols-12 gap-3 py-2 px-4 border-b border-gray-250 font-poppins_bold">
-                        <span className="col-span-0.5" style={{ visibility: 'hidden' }}>Thông tin</span>
-                        <span className="col-span-2.5">Thời gian</span>
-                        <span className="col-span-1.5 text-center items-start">Kích cỡ</span>
-                        <span className="col-span-1.5 text-center items-start">Số bản</span>
-                        <span className="col-span-1.5 text-center items-start">Số mặt</span>
-                        <span className="col-span-1.5">Địa điểm</span>
-                        <span className="col-span-1.5">Máy in</span>
-                        <span className="col-span-1.5 text-center items-start">Tổng trang</span>
-                        <span className="col-span-1.5 text-center items-start">Tổng giá</span>
-                        <span className="col-span-1.5">Tập tin</span>
-                        <span className="col-span-1.5 text-center items-start">Trạng thái</span>
-                    </li>
-                    {printHistory.map((order) => (
-                        <li key={order.id} className="col-span-12 grid grid-cols-12 gap-4 py-2 px-4 border-b border-gray-250">
-                            <span className="col-span-0.5 flex justify-center items-start">
+                <div className="border border-gray-300 rounded-lg mx-10">
+                    <ul className="overflow-y-auto w-full">
+                        <li className="col-span-24 grid grid-cols-24 gap-3 p-5 border-b border-gray-250 font-poppins_bold">
+                            <span className="col-span-1"></span>
+                            <span className="col-span-2 cursor-pointer select-none"
+                                  onClick={() => handleSort('createdAt')}>Thời gian {getSortArrow('createdAt')}</span>
+                            <span className="col-span-2 text-center cursor-pointer select-none"
+                                  onClick={() => handleSort('size')}>Kích cỡ {getSortArrow('size')}</span>
+                            <span className="col-span-2 text-center cursor-pointer select-none"
+                                  onClick={() => handleSort('copies')}>Số bản {getSortArrow('copies')}</span>
+                            <span className="col-span-2 text-center cursor-pointer select-none"
+                                  onClick={() => handleSort('sides')}>Số mặt {getSortArrow('sides')}</span>
+                            <span className="col-span-3 cursor-pointer select-none"
+                                  onClick={() => handleSort('location')}>Địa điểm {getSortArrow('location')}</span>
+                            <span className="col-span-2 cursor-pointer select-none"
+                                  onClick={() => handleSort('printer')}>Máy in {getSortArrow('printer')}</span>
+                            <span className="col-span-2 text-center cursor-pointer select-none"
+                                  onClick={() => handleSort('totalPages')}>Tổng trang {getSortArrow('totalPages')}</span>
+                            <span className="col-span-2 text-center cursor-pointer select-none"
+                                  onClick={() => handleSort('totalPrice')}>Tổng giá {getSortArrow('totalPrice')}</span>
+                            <span className="col-span-4 text-center cursor-pointer select-none"
+                                  onClick={() => handleSort('files')}>Tập tin {getSortArrow('files')}</span>
+                            <span className="col-span-2 text-center cursor-pointer select-none"
+                                  onClick={() => handleSort('status')}>Trạng thái {getSortArrow('status')}</span>
+                        </li>
+                        {sortedHistory.map((order) => (
+                            <li key={order.id}
+                                className="col-span-24 grid grid-cols-24 gap-4 py-2 pb-5 px-4 border-b border-gray-250">
+                            <span className="col-span-1 flex justify-center">
                                 <button
                                     className="w-6 h-6 cursor-pointer"
                                     onClick={(e) => handleInfoClick(order, e)}
@@ -159,54 +275,60 @@ const PrintManage = () => {
                                     <img src={info} alt="info icon" className="w-6 h-6"/>
                                 </button>
                             </span>
-                            <span
-                                className="col-span-1.5">{order.createdAt.toDate().toLocaleString('vi-VN', {hour12: false})}</span>
-                            <span className="col-span-1.5 text-center items-start">{order.size.toUpperCase()}</span>
-                            <span className="col-span-1.5 text-center items-start">{order.copies}</span>
-                            <span className="col-span-1.5 text-center items-start">{order.sides}</span>
-                            <span className="col-span-1.5">
+                                <span
+                                    className="col-span-2">{order.createdAt.toDate().toLocaleString('vi-VN', {hour12: false})}</span>
+                                <span className="col-span-2 text-center">{order.size.toUpperCase()}</span>
+                                <span className="col-span-2 text-center">{order.copies}</span>
+                                <span className="col-span-2 text-center">{order.sides}</span>
+                                <span className="col-span-3">
                                 {order.location === 'custom' ? `${order.customLocation} (Ship tận nơi)` : order.location.toUpperCase()}
                             </span>
-                            <span className="col-span-1.5">{order.printer}</span>
-                            <span className="col-span-1.5 text-center items-start">{order.totalPages}</span>
-                            <span className="col-span-1.5 text-center items-start">{order.totalPrice} VND</span>
-                            <span className="col-span-1.5">
-                                <ul>
+                                <span className="col-span-2">{order.printer}</span>
+                                <span className="col-span-2 text-center">{order.totalPages}</span>
+                                <span className="col-span-2 text-center">{order.totalPrice} VND</span>
+                                <span className="col-span-4">
+                                <ul className="w-full">
                                     {order.files?.map((file) => (
-                                        <li key={file.fileName} className="font-poppins_semibold flex items-center truncate max-w-[100px]">
-                                            <img src={getFileIcon(file.fileName)} alt="file icon" className="w-4 h-4 mr-1"/>
-                                            <a href={file.url} target="_blank" rel="noopener noreferrer" className="truncate">{file.fileName}</a>
+                                        <li key={file.fileName}
+                                            className="font-poppins_semibold flex items-center truncate w-full">
+                                            <img src={getFileIcon(file.fileName)} alt="file icon"
+                                                 className="w-4 h-4 mr-1"/>
+                                            <a href={file.url} target="_blank" rel="noopener noreferrer"
+                                               className="truncate w-full">
+                                                {file.fileName}
+                                            </a>
                                         </li>
                                     ))}
                                 </ul>
                             </span>
-                            <span className="col-span-1.5 flex flex-col items-center justify-start">
+                                <span className="col-span-2 flex flex-col items-center">
                                 <p className={`whitespace-nowrap font-poppins_semibold px-2 py-1 rounded-full ${statusMap[order.status]?.color}`}>
                                     {statusMap[order.status]?.text || order.status}
                                 </p>
-                                {order.status === 'pending' && (
-                                    <div className="flex space-x-2 mt-3">
-                                    <button onClick={() => handleApprove(order.id)}
-                                                className="flex items-center justify-center">
-                                            <img src={approve} alt="approve icon" className="w-7 h-7"/>
-                                        </button>
-                                        <button onClick={() => handleReject(order.id)}
-                                                className="flex items-center justify-center">
-                                            <img src={reject} alt="reject icon" className="w-7 h-7"/>
-                                        </button>
-                                    </div>
-                                )}
+                                    {order.status === 'pending' && (
+                                        <div className="flex space-x-2 mt-3">
+                                            <button onClick={() => handleApprove(order.id)}
+                                                    className="flex items-center justify-center">
+                                                <img src={approve} alt="approve icon" className="w-7 h-7"/>
+                                            </button>
+                                            <button onClick={() => handleReject(order.id)}
+                                                    className="flex items-center justify-center">
+                                                <img src={reject} alt="reject icon" className="w-7 h-7"/>
+                                            </button>
+                                        </div>
+                                    )}
                             </span>
-                        </li>
-                    ))}
-                </ul>
-                {selectedOrder && (
-                    <div ref={popupRef} className="absolute bg-white p-2 rounded shadow-lg"
-                         style={{top: popupPosition.top, left: popupPosition.left}}>
-                        <p className="text-sm"><strong>Order ID:</strong> {selectedOrder.oid}</p>
-                        <p className="text-sm"><strong>User ID:</strong> {selectedOrder.uid}</p>
-                    </div>
-                )}
+                            </li>
+                        ))}
+                    </ul>
+                    {selectedOrder && (
+                        <div ref={popupRef} className="absolute bg-white p-4 border-gray-500 rounded shadow"
+                             style={{top: popupPosition.top, left: popupPosition.left}}>
+                            <p className=""><strong>Order ID:</strong> {selectedOrder.oid}</p>
+                            <p className=""><strong>User ID:</strong> {selectedOrder.uid}</p>
+                        </div>
+                    )}
+                </div>
             </div>
         </Layout>
     );
