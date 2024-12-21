@@ -1,7 +1,5 @@
 # Assignment_CNPM_241
 
-Tools để host dành cho backend để frontend lấy API: https://render.com/
-
 Dự án được làm bằng ReactJs + Vite + TailwindCSS + Firebase
 
 File web project được để ở branch frontend_v2
