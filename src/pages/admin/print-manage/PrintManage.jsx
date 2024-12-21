@@ -240,7 +240,7 @@ const PrintManage = () => {
                             <button className="col-span-1" disabled></button>
                             <button className="col-span-2 cursor-pointer select-none text-left"
                                     onClick={() => handleSort('createdAt')}>
-                                Thời gian {getSortArrow('createdAt')}
+                                Ngày tạo {getSortArrow('createdAt')}
                             </button>
                             <button className="col-span-2 text-center cursor-pointer select-none"
                                     onClick={() => handleSort('size')}>
@@ -258,9 +258,9 @@ const PrintManage = () => {
                                     onClick={() => handleSort('location')}>
                                 Địa điểm {getSortArrow('location')}
                             </button>
-                            <button className="col-span-2 cursor-pointer select-none"
+                            <button className="col-span-2 text-center cursor-pointer select-none"
                                     onClick={() => handleSort('printer')}>
-                                Máy in {getSortArrow('printer')}
+                                Mã máy in {getSortArrow('printer')}
                             </button>
                             <button className="col-span-2 text-center cursor-pointer select-none"
                                     onClick={() => handleSort('totalPages')}>
@@ -303,7 +303,7 @@ const PrintManage = () => {
                                 <span className="col-span-3">
                                 {order.location === 'custom' ? `${order.customLocation} (Ship tận nơi)` : order.location.toUpperCase()}
                             </span>
-                                <span className="col-span-2">{order.printer}</span>
+                                <span className="col-span-2 text-center">{order.printer}</span>
                                 <span className="col-span-2 text-center">{order.totalPages}</span>
                                 <span className="col-span-2 text-center">{order.totalPrice} VND</span>
                                 <span className="col-span-4">

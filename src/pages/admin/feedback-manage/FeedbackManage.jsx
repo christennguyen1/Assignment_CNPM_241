@@ -201,7 +201,7 @@ const Feedback = () => {
                             <button className="col-span-1" disabled></button>
                             <button className="col-span-2 cursor-pointer select-none text-left"
                                     onClick={() => handleSort('timestamp')}>
-                                Thời gian
+                                Ngày tạo
                             </button>
                             <button className="col-span-2 cursor-pointer select-none text-center"
                                     onClick={() => handleSort('type')}>

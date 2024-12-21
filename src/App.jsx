@@ -8,6 +8,7 @@ import NoPage from "./pages/noPage/NoPage";
 import PrintRequest from "./pages/user/print-request/PrintRequest.jsx";
 import AboutUs from  "./pages/about-us/AboutUs.jsx";
 import Feedback from "./pages/user/feedback/Feedback.jsx";
+import UserManage from "./pages/admin/user-manage/UserManage.jsx";
 import PrintManage from "./pages/admin/print-manage/PrintManage.jsx";
 import FeedbackManage from "./pages/admin/feedback-manage/FeedbackManage.jsx";
 import PrinterManage from "./pages/admin/printer-manage/PrinterManage.jsx";
@@ -56,6 +57,11 @@ const App = () => {
             <Route path="/printer-manage" element={
                 <ProtectedRouteForAdmin>
                 <PrinterManage/>
+                </ProtectedRouteForAdmin>
+            } />
+            <Route path="/user-manage" element={
+                <ProtectedRouteForAdmin>
+                <UserManage/>
                 </ProtectedRouteForAdmin>
             } />
           <Route path="/sign-up" element={<Signup />} />

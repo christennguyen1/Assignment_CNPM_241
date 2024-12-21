@@ -264,9 +264,6 @@ const PrinterManage = () => {
                                         id="printerPlace"
                                         value={newPrinter.place}
                                         onChange={(e) => setNewPrinter({...newPrinter, place: e.target.value})}
-                                        // className={`w-2/3 py-2 px-1 rounded-md ${
-                                        //     location === '' ? 'text-gray-400' : 'text-black'
-                                        // } custom-select`}
                                         className={`w-64 px-3 py-2 border rounded-md ${newPrinter.place === '' ? 'text-gray-400' : 'text-black'}`}
                                         required
                                     >
@@ -323,11 +320,11 @@ const PrinterManage = () => {
                                     onClick={() => handleSort('createdAt')}>
                                 Ngày tạo {getSortArrow('createdAt')}
                             </button>
-                            <button className="col-span-11 select-none text-left"
+                            <button className="col-span-9 select-none text-left"
                                     onClick={() => handleSort('name')}>
                                 Tên máy in {getSortArrow('name')}
                             </button>
-                            <button className="col-span-6 select-none text-center"
+                            <button className="col-span-8 select-none text-center"
                                     onClick={() => handleSort('place')}>
                                 Vị trí {getSortArrow('place')}
                             </button>
@@ -358,8 +355,8 @@ const PrinterManage = () => {
                                 <span
                                     className="col-span-2">{printer.createdAt?.toDate().toLocaleString('vi-VN', {hour12: false})}
                                 </span>
-                                <span className="col-span-11">{printer.name}</span>
-                                <span className="col-span-6 text-center">{printer.place.toUpperCase()}</span>
+                                <span className="col-span-9">{printer.name}</span>
+                                <span className="col-span-8 text-center">{printer.place.toUpperCase()}</span>
                                 <span className="col-span-3 text-center inline-flex items-center justify-center">
                                     <button
                                         className={`inline-block font-poppins_bold px-2 py-1 rounded-full ${printer.working ? 'bg-green-100 text-green-500' : 'bg-red-100 text-red-500'}`}
