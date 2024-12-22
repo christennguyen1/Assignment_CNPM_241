@@ -1,0 +1,9 @@
+[core]
+	repositoryformatversion = 0
+	filemode = false
+	bare = false
+	logallrefupdates = true
+	ignorecase = true
+[remote "origin"]
+	url = https://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@github.com/christennguyen1/Assignment_CNPM_241.git
+	fetch = +refs/heads/*:refs/remotes/origin/*

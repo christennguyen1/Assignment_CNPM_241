@@ -1,0 +1,200 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: "Poppins_Black";
+    src: url('/src/fonts/Poppins-Black.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Poppins_BlackItalic";
+    src: url('/src/fonts/Poppins-BlackItalic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Poppins_Bold";
+    src: url('/src/fonts/Poppins-Bold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Poppins_BoldItalic";
+    src: url('/src/fonts/Poppins-BoldItalic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Poppins_ExtraBold";
+    src: url('/src/fonts/Poppins-ExtraBold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Poppins_ExtraBoldItalic";
+    src: url('/src/fonts/Poppins-ExtraBoldItalic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Poppins_Italic";
+    src: url('/src/fonts/Poppins-Italic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Poppins_Light";
+    src: url('/src/fonts/Poppins-Light.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Poppins_LightItalic";
+    src: url('/src/fonts/Poppins-LightItalic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Poppins_Medium";
+    src: url('/src/fonts/Poppins-Medium.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Poppins_MediumItalic";
+    src: url('/src/fonts/Poppins-MediumItalic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Poppins_Regular";
+    src: url('/src/fonts/Poppins-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Poppins_SemiBold";
+    src: url('/src/fonts/Poppins-SemiBold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Poppins_SemiBoldItalic";
+    src: url('/src/fonts/Poppins-SemiBoldItalic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Poppins_Thin";
+    src: url('/src/fonts/Poppins-Thin.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Poppins_ThinItalic";
+    src: url('/src/fonts/Poppins-ThinItalic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+html {
+    color: #212121;
+    text-decoration: none;
+}
+
+select {
+    border: 1px solid #e0e0e0;
+    scroll-behavior: smooth;
+}
+
+.loader-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align items to the top */
+    padding-top: 80px; /* Add some top padding */
+    z-index: 99; /* Ensure it is on top of other elements */
+}
+
+.loader {
+    border: 16px solid #f3f3f3; /* Light grey */
+    border-top: 16px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.navbar-home {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 10;
+    background-color: transparent;
+    color: white;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.navbar-home:hover {
+    background-color: white;
+    color: black;
+}
+
+/* print-mange */
+.col-span-0-dot-5 {
+    grid-column: span 0.5;
+}
+
+/* Hide the default radio button */
+input[type="radio"] {
+    display: none;
+}
+
+/* Style the custom radio button */
+input[type="radio"] + label {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+/* Display the custom radio button icon */
+input[type="radio"] + label::before {
+    content: url("assets/radio_no.svg");
+    display: inline-block;
+    margin-right: 8px;
+    width: 20px;
+    height: 20px;
+}
+
+/* Change the icon when the radio button is checked */
+input[type="radio"]:checked + label::before {
+    content: url("assets/radio_yes.svg");
+}
