@@ -1,0 +1,172 @@
+import { useNavigate } from "react-router";
+import Layout from "../../../components/layout/Layout.jsx";
+import { useContext, useState, useEffect, useCallback } from "react";
+import myContext from "../../../context/myContext.jsx";
+import toast from "react-hot-toast";
+import Loader from "../../../components/loader/Loader.jsx";
+import { collection, addDoc } from "firebase/firestore";
+import { fireDB } from "../../../firebase/FirebaseConfig.jsx";
+import HCMUT from "../../../assets/HCMUT.png";
+
+const ErrorReport = () => {
+    const context = useContext(myContext);
+    const { loading, setLoading } = context;
+
+    // navigate
+    const navigate = useNavigate();
+
+    // Report State
+    const [report, setReport] = useState({
+        title: "",
+        description: ""
+    });
+
+    const sendReportFunction = useCallback(async () => {
+        // validation
+        if (report.title === "" || report.description === "") {
+            toast.error("Tất cả các trường là bắt buộc");
+            return;
+        }
+
+        setLoading(true);
+        try {
+            await addDoc(collection(fireDB, "report"), {
+                title: report.title,
+                description: report.description,
+                timestamp: new Date()
+            });
+            setReport({
+                title: "",
+                description: ""
+            });
+            toast.success("Gửi yêu cầu thành công");
+            setLoading(false);
+            navigate('/');
+        } catch (error) {
+            console.log(error);
+            setLoading(false);
+            toast.error("Gửi yêu cầu thất bại");
+        }
+    }, [report, setLoading, navigate]);
+
+    const handleCancel = useCallback(() => {
+        setReport({
+            title: "",
+            description: ""
+        });
+        navigate('/');
+    }, [navigate]);
+
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if (event.key === 'Escape') {
+                handleCancel();
+            } else if (event.key === 'Enter') {
+                sendReportFunction().catch(error => console.error(error));
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [handleCancel, sendReportFunction, report]);
+
+    return (
+        <div className="relative">
+            {/* Darken Layout */}
+            <Layout>
+                <button
+                    className="absolute inset-0 bg-black bg-opacity-50 z-20"
+                    onClick={() => handleCancel().catch(error => console.error(error))}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            handleCancel().catch(error => console.error(error));
+                        }
+                    }}
+                ></button>
+                <img className="absolute top-0 left-0 z-0 w-full h-full object-cover" src={HCMUT} alt=""/>
+            </Layout>
+
+            {/* Main Content */}
+            <div className="absolute inset-0 flex justify-center items-center z-30">
+                {loading && <Loader/>}
+
+                {/* Report Form */}
+                <form
+                    className="login_Form bg-white p-6 rounded-lg shadow-lg w-full max-w-5xl h-3/5 -mt-20 flex flex-col"
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        sendReportFunction().catch(error => console.error(error));
+                    }}
+                >
+                    {/* Top Heading */}
+                    <div className="mb-5">
+                        <h2 className='text-left text-2xl font-poppins_bold'>
+                            Báo Lỗi
+                        </h2>
+                        <div className='text-left text-sm mt-2'>
+                            Chúng tôi rất tiếc vì có lỗi đã xảy ra. Vui lòng báo lỗi để Admin có thể hỗ trợ bạn sớm nhất
+                            có thể!
+                        </div>
+                    </div>
+
+                    {/* Input One */}
+                    <div className="mb-3">
+                        <label htmlFor="title" className="block text-sm font-medium">Tiêu đề</label>
+                        <input
+                            type="text"
+                            id="title"
+                            name="title"
+                            placeholder='Tên lỗi bạn gặp phải?'
+                            value={report.title}
+                            onChange={(e) => {
+                                setReport({
+                                    ...report,
+                                    title: e.target.value
+                                });
+                            }}
+                            className='bg-gray-200 px-2 py-2 w-full rounded-md outline-none placeholder-gray-500'
+                        />
+                    </div>
+
+                    {/* Input Two */}
+                    <div className="mb-5 flex-grow">
+                        <label htmlFor="description" className="block text-sm font-medium">Mô tả</label>
+                        <textarea
+                            id="description"
+                            placeholder='Chi tiết loại lỗi bạn gặp phải là gì?'
+                            value={report.description}
+                            onChange={(e) => {
+                                setReport({
+                                    ...report,
+                                    description: e.target.value
+                                });
+                            }}
+                            className='bg-gray-200 px-2 py-2 w-full rounded-md outline-none placeholder-gray-500 h-full'
+                        />
+                    </div>
+
+                    {/* Submit and Cancel Buttons */}
+                    <div className="mb-3 flex justify-end mt-5">
+                        <button
+                            type='submit'
+                            className='text-white bg-black hover:bg-[#1488D8] hover:scale-105 text-center py-2 px-4 font-poppins_bold rounded-full mr-2'
+                        >
+                            Gửi yêu cầu
+                        </button>
+                        <button
+                            type='button'
+                            onClick={() => handleCancel().catch(error => console.error(error))}
+                            className='bg-gray-500 hover:bg-[#1488D8] hover:scale-105 text-white text-center py-2 px-4 font-poppins_bold rounded-full ml-2'
+                        >
+                            Hủy
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+};
+
+export default ErrorReport;

@@ -1,26 +1,25 @@
-# Assignment_CNPM_241
+**HCMUT-SSPS PROJECT**
 
-Dự án được làm bằng ReactJs + Vite + TailwindCSS + Firebase
+This is the full project for the course `Software Engineering` at `Ho Chi Minh City University of Technology`.
 
-File web project được để ở branch frontend_v2
+The project temporarily uses Firebase for authentication and Firestore for the database.
 
-# Installation
+To login to the app as an admin, use the following credential:
+- Username: `admin@gmail.com`
+- Password: `123456`
 
-**You need to install Vite to run this project.**
+To login to the app as a user, register or use the following credential:
+- Username: `user@gmail.com`
+- Password: `123456`
 
-**To install this project type the followings:**
-
-```bash 
-git clone -b frontend-v2 https://github.com/christennguyen1/Assignment_CNPM_241.git
-```
-
-# Running
-**To run this code type the followings:**
+## Installation
 
 ```bash 
 npm install
 ```
 
-```bash 
+## Usage
+
+```bash
 npm run dev
 ```
