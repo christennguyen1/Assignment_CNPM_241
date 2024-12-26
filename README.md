@@ -1,4 +1,4 @@
-**HCMUT-SSPS PROJECT**
+## **HCMUT-SSPS PROJECT**
 
 This is the full project for the course `Software Engineering` at `Ho Chi Minh City University of Technology`.
 
@@ -13,6 +13,10 @@ To login to the app as a user, register or use the following credential:
 - Password: `123456`
 
 ## Installation
+
+```bash 
+git clone https://github.com/christennguyen1/Assignment_CNPM_241.git
+```
 
 ```bash 
 npm install
